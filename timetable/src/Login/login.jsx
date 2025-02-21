@@ -19,7 +19,7 @@ function Login() {
             icon: 'success',
             confirmButtonText: 'OK'
           });
-          // navigate('/Home');
+          navigate('/Home');
         }
       else
       {
@@ -52,7 +52,7 @@ function Login() {
         {/* End of site logo */}
         
         <h1 className="text-center mb-3">
-          <strong>Login Window Branch</strong>
+          <strong>Login</strong>
         </h1>
         
         {/* Form */}
