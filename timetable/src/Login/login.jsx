@@ -52,7 +52,7 @@ function Login() {
         {/* End of site logo */}
         
         <h1 className="text-center mb-3">
-          <strong>Login Window</strong>
+          <strong>Login Window Branch</strong>
         </h1>
         
         {/* Form */}
