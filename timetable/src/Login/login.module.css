@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+        *
+        {
+            font-family: "Pacifico", serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+        
+        input:focus
+        {
+            box-shadow: none !important;
+            outline: none;
+            border: 1px solid rgba(3, 1, 1, 0.767) !important;
+           
+        }
+
+        input
+        {
+            border-radius: 5px;
+            margin:0px 5px;
+        }
+
+        .loginHome
+        {
+            background: url("../Images/onecalendar.jpg");
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            height: 100vh;
+            margin: 0;
+        }
