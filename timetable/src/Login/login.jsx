@@ -35,7 +35,7 @@ function Login() {
 
   return (
     
-    <div className="container d-flex justify-content-center align-items-center vh-100 loginHome">
+    <div className="loginHome container d-flex justify-content-center align-items-center vh-100 ">
       
       {/* Card */}
       <div className="card shadow-lg p-4" style={{ width: '100%', maxWidth: '400px' }}>

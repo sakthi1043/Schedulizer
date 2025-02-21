@@ -22,7 +22,7 @@
 
         .loginHome
         {
-            background: url("../Images/onecalendar.jpg");
+            background: url("../Images/onecalendar.jpg") !important;
             background-position: center;
             background-repeat: no-repeat;
             background-size: cover;

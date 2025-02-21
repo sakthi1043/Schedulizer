@@ -11,7 +11,7 @@ function ForgotPassword(){
     return(
         <>
         {/* <h1>{count}</h1> */}
-       <div className="container d-flex justify-content-center align-items-center vh-100">
+       <div className="container d-flex justify-content-center align-items-center vh-100 forgotBody">
       {/* Card */}
       <div className="card shadow-lg p-4" style={{ width: '100%', maxWidth: '400px' }}>
         {/* Site logo */}

@@ -71,7 +71,7 @@ const RegistrationForm = () => {
     };
   
     return (
-      <div className="container d-flex justify-content-center align-items-center vh-100">
+      <div className="RegisterBody container d-flex justify-content-center align-items-center vh-100">
         {/* Card */}
         <div className="card shadow-lg" style={{ maxWidth: '900px' }}>
           <div className="row">

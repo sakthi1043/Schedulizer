@@ -3,7 +3,7 @@ import { Grid, Paper, Typography, Button, Card, CardContent } from '@mui/materia
 import { Icon } from '@mui/icons-material';
 import { Box } from '@mui/system';
 import './Home.css';
-import Sidebar from './sidebar'; // Sidebar component
+import Sidebar from './Sidebar'; // Sidebar component
 import Navbar from './Navbar';   // Navbar component
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
@@ -30,6 +30,7 @@ const AnalysisChart = () => (
 
 const HomePage = () => {
   return (
+    <div className='HomeBody'>
     <Box sx={{ display: 'flex' }}>
       <Sidebar />
       <Box sx={{ flexGrow: 1, padding: 3 }}>
@@ -72,6 +73,7 @@ const HomePage = () => {
         </Grid>
       </Box>
     </Box>
+    </div>
   );
 };
 
