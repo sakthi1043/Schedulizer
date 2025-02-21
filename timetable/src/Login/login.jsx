@@ -1,9 +1,9 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import './login.module.css'
-import { useNavigate,Link } from 'react-router-dom';
 import timeImage from '../Images/pngtree-time-clock-schedule-vector-png-image_15861573.png'; // Make sure to import your logo image
+import './login.module.css';
 
 function Login() {
   const[username,setUsername]=React.useState('');
@@ -52,7 +52,7 @@ function Login() {
         {/* End of site logo */}
         
         <h1 className="text-center mb-3">
-          <strong>Login</strong>
+          <strong>Login Window</strong>
         </h1>
         
         {/* Form */}
