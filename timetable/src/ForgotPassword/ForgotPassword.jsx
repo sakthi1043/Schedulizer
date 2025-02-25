@@ -1,6 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-
-import './ForgotPassword.module.css';
+import { Link, useNavigate } from 'react-router-dom';
+import styles from './ForgotPassword.module.css';
 import React from 'react';
 import timeImage from '../Images/pngtree-time-clock-schedule-vector-png-image_15861573.png'; // Make sure to import your logo image
 
@@ -11,7 +11,8 @@ function ForgotPassword(){
     return(
         <>
         {/* <h1>{count}</h1> */}
-       <div className="container d-flex justify-content-center align-items-center vh-100 forgotBody">
+        <div className={styles.forgotBody}>
+       <div className="container d-flex justify-content-center align-items-center vh-100 ">
       {/* Card */}
       <div className="card shadow-lg p-4" style={{ width: '100%', maxWidth: '400px' }}>
         {/* Site logo */}
@@ -70,12 +71,13 @@ function ForgotPassword(){
                     
                 </div>
                 <div className="row text-center">
-                    <p>Back to <a href="./login.html" style={{textDecoration: 'none'}}>login</a></p>
+                    <p>Back to <Link to="/" style={{textDecoration:"none"}}>Login</Link></p>
                 </div>
             {/* </form> */}
             {/* <!--Form end--> */}
         </div>
         {/* <!--Card end--> */}
+    </div>
     </div>
         </>
     )

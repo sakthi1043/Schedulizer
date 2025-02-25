@@ -11,14 +11,16 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "^13.5.0",
+    "animate.css": "^4.1.1",
     "bootstrap": "^5.3.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^6.29.0",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "recharts": "^2.15.1",
     "sweetalert2": "^11.17.2",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "wow.js": "^1.2.2"
   },
   "scripts": {
     "start": "react-scripts start",

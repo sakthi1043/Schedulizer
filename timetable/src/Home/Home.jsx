@@ -2,7 +2,7 @@ import React from 'react';
 import { Grid, Paper, Typography, Button, Card, CardContent } from '@mui/material';
 import { Icon } from '@mui/icons-material';
 import { Box } from '@mui/system';
-import './Home.css';
+import styles from './Home.module.css';
 import Sidebar from './Sidebar'; // Sidebar component
 import Navbar from './Navbar';   // Navbar component
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -28,9 +28,9 @@ const AnalysisChart = () => (
   </ResponsiveContainer>
 );
 
-const HomePage = () => {
+function HomePage (){
   return (
-    <div className='HomeBody'>
+    <div className={styles.HomeBody}>
     <Box sx={{ display: 'flex' }}>
       <Sidebar />
       <Box sx={{ flexGrow: 1, padding: 3 }}>
@@ -74,6 +74,11 @@ const HomePage = () => {
       </Box>
     </Box>
     </div>
+    // <div className='HomeBody'>
+    //   <Box sx={{ display: 'flex' }}>
+    //     <h1>hello</h1>
+    //   </Box>
+    // </div>
   );
 };
 
