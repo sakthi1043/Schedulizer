@@ -5,6 +5,7 @@ import { Box } from '@mui/system';
 import styles from './Home.module.css';
 import Sidebar from './Sidebar'; // Sidebar component
 import Navbar from './Navbar';   // Navbar component
+import Dashboard from './Dashboard'; // Dashboard component
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 const data = [
@@ -31,48 +32,7 @@ const AnalysisChart = () => (
 function HomePage (){
   return (
     <div className={styles.HomeBody}>
-    <Box sx={{ display: 'flex' }}>
-      <Sidebar />
-      <Box sx={{ flexGrow: 1, padding: 3 }}>
-        <Navbar />
-        <Grid container spacing={3}>
-          {/* Dashboard Cards */}
-          <Grid item xs={4}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>Total Timetables</Typography>
-                <Typography variant="h5">12</Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={4}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>Timetable Generation Rate</Typography>
-                <Typography variant="h5">75%</Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={4}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>Active Users</Typography>
-                <Typography variant="h5">45</Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
-        
-        <Grid container spacing={3} sx={{ marginTop: 3 }}>
-          <Grid item xs={12}>
-            <Paper elevation={3} sx={{ padding: 3 }}>
-              <Typography variant="h6" gutterBottom>Timetable Analysis</Typography>
-              <AnalysisChart />
-            </Paper>
-          </Grid>
-        </Grid>
-      </Box>
-    </Box>
+      <Dashboard window={() => window}/>
     </div>
     // <div className='HomeBody'>
     //   <Box sx={{ display: 'flex' }}>
