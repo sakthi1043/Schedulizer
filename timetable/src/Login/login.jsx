@@ -1,11 +1,16 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import React from 'react';
+import React,{useEffect} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import timeImage from '../Images/pngtree-time-clock-schedule-vector-png-image_15861573.png'; // Make sure to import your logo image
-import './login.module.css';
+import styles from './login.module.css';
+import 'animate.css'; // Import Animate.css
+import WOW from 'wow.js'; // Import Wow.js
 
 function Login() {
+
+  
+
   const[username,setUsername]=React.useState('');
   const[password,setPassword]=React.useState('');
   const navigate=useNavigate();
@@ -19,7 +24,7 @@ function Login() {
             icon: 'success',
             confirmButtonText: 'OK'
           });
-          // navigate('/Home');
+          navigate('/Home');
         }
       else
       {
@@ -33,9 +38,21 @@ function Login() {
     }
 
 
-  return (
+    useEffect(() => {
+      const wow = new WOW({
+        live: false, // Prevents live DOM elements from triggering animations
+      });
+      wow.sync(); // Manually trigger the animation
+      wow.init(); // Initialize WOW.js
+    }, []);
     
-    <div className="container d-flex justify-content-center align-items-center vh-100 loginHome">
+    
+
+  return (
+
+    
+    <div className={styles.loginHome}>
+    <div className="container d-flex justify-content-center align-items-center vh-100"  data-wow-offset="200" data-wow-duration="3s">
       
       {/* Card */}
       <div className="card shadow-lg p-4" style={{ width: '100%', maxWidth: '400px' }}>
@@ -52,7 +69,7 @@ function Login() {
         {/* End of site logo */}
         
         <h1 className="text-center mb-3">
-          <strong>Login Window</strong>
+          <strong>Login</strong>
         </h1>
         
         {/* Form */}
@@ -109,6 +126,7 @@ function Login() {
         {/* End of form */}
       </div>
       {/* End of card */}
+    </div>
     </div>
     // End of container
   );

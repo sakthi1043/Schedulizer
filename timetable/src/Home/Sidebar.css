@@ -1,0 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+    *
+    {
+        font-family: "Pacifico", serif !important;
+        font-weight: 400;
+        font-style: normal;
+    }
+
+.sidebar {
+    width: 240px;
+    background-color: #0da4eb; /* Dark attractive blue */
+    color: white;
+    position: fixed;
+    height: calc(100vh - 64px); /* Adjusts sidebar height to avoid overlapping header */
+    top: 64px; /* Prevents overlapping with the header */
+  }
+  
+  .sidebar-list {
+    padding: 20px;
+  }
+  
+  .sidebar-list .MuiListItem-root {
+    padding: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Adds separation lines */
+  }
+  
+  .sidebar-list .MuiListItem-root:hover {
+    background-color: #455a64;
+  }
+  

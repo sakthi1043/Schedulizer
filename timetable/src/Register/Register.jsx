@@ -1,7 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React,{useState} from 'react';
 import Swal from 'sweetalert2';
-import './Register.module.css'
+import styles from './Register.module.css'
 import { useNavigate,Link } from 'react-router-dom';
 
 import timeImage from '../Images/2.jpg'; // Make sure to import your logo image
@@ -71,7 +71,8 @@ const RegistrationForm = () => {
     };
   
     return (
-      <div className="container d-flex justify-content-center align-items-center vh-100">
+      <div className={styles.RegisterBody}>
+      <div className=" container d-flex justify-content-center align-items-center vh-100">
         {/* Card */}
         <div className="card shadow-lg" style={{ maxWidth: '900px' }}>
           <div className="row">
@@ -221,6 +222,7 @@ const RegistrationForm = () => {
           </div>
         </div>
         {/* Card end */}
+      </div>
       </div>
     );
   };
