@@ -7,6 +7,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import { NavLink } from "react-router-dom";
 import EventNoteIcon from '@mui/icons-material/EventNote';
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd"; 
+import ListAltIcon from '@mui/icons-material/ListAlt';
 
 const Sidebar = ({ isOpen }) => {
   return (
@@ -75,6 +76,23 @@ const Sidebar = ({ isOpen }) => {
         >
           <ListItemIcon sx={{ color: "#D9D9D9" }}><PsychologyIcon /></ListItemIcon>
           <ListItemText primary="Teachers" sx={{ transition: "font-weight 0.3s ease" }} />
+        </ListItem>
+        <Divider sx={{ backgroundColor: "#D9D9D9" }} />
+
+        {/* Courses */}
+        <ListItem 
+          button 
+          component={NavLink} 
+          to="/Courses" 
+          sx={{
+            color: "#D9D9D9",
+            "&:hover": { backgroundColor: "#6e8898" },
+            "&:hover .MuiListItemText-primary": { fontWeight: "bold" }, 
+            "&.active-link": { backgroundColor: "#1E1E1E", fontWeight: "bold" }
+          }}
+        >
+          <ListItemIcon sx={{ color: "#D9D9D9" }}><ListAltIcon /></ListItemIcon>
+          <ListItemText primary="Courses" sx={{ transition: "font-weight 0.3s ease" }} />
         </ListItem>
         <Divider sx={{ backgroundColor: "#D9D9D9" }} />
 

@@ -10,11 +10,8 @@ import { FaTrash } from "react-icons/fa"; // fror icons
 import {  FaPen } from "react-icons/fa";
 import { Modal } from "bootstrap";
 
-
-
-const Students = () => {
-
-	const [isSidebarOpen, setSidebarOpen] = useState(true);
+const Courses = () => {
+    const [isSidebarOpen, setSidebarOpen] = useState(true);
 	const [selectedRow, setSelectedRow] = useState(null);
 
 	// open the modal and set the selected row
@@ -31,8 +28,8 @@ const Students = () => {
 	  };
 
 	const columns = [
-		{ name: "Name", selector: (row) => row.name, sortable: true },
-		{ name: "Course", selector: (row) => row.course, sortable: true },
+		{ name: "Course Name", selector: (row) => row.name, sortable: true },
+		{ name: "Duration", selector: (row) => row.course, sortable: true },
 		{ name: "Year", selector: (row) => row.year, sortable: true },
 		{
 			name: "Actions",
@@ -435,6 +432,6 @@ const Students = () => {
 		</Box>
 		</Box>
 	);
-	};
+}
 
-	export default Students;
+export default Courses

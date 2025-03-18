@@ -6,6 +6,8 @@ import RegistrationForm from './Register/Register';
 import ForgotPassword from './ForgotPassword/ForgotPassword';
 import Home from './Home/Dashboard';
 import Students from './Students/Students';
+import Teachers from './Teachers/Teachers';
+import Courses from './Courses/Courses';
 
 
 function App() {
@@ -17,6 +19,8 @@ function App() {
         <Route path="/Register" element={<RegistrationForm/>} />
         <Route path="/Home" element={<Home/>} />
         <Route path="/Students" element={<Students/>} />
+        <Route path="/Teachers" element={<Teachers/>}/>
+        <Route path="/Courses" element={<Courses/>}/>
       </Routes>
         
         {/* Add more routes as needed */}
