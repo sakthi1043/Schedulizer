@@ -31,8 +31,9 @@ const Students = () => {
 	  };
 
 	const columns = [
+		{ name: "Id", selector: (row) => row.id, sortable: true },
 		{ name: "Name", selector: (row) => row.name, sortable: true },
-		{ name: "Course", selector: (row) => row.course, sortable: true },
+		{ name: "Department", selector: (row) => row.course, sortable: true },
 		{ name: "Year", selector: (row) => row.year, sortable: true },
 		{
 			name: "Actions",

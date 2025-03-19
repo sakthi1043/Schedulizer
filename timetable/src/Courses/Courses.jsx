@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Sidebar from "../Home/Sidebar";
 import Header from "../Home/Header";
-import { Box } from "@mui/material";
+import { Box, duration } from "@mui/material";
 import "../Home/AdminDashboard.css";
 import DataTable from "react-data-table-component";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -28,9 +28,9 @@ const Courses = () => {
 	  };
 
 	const columns = [
-		{ name: "Course Name", selector: (row) => row.name, sortable: true },
-		{ name: "Duration", selector: (row) => row.course, sortable: true },
-		{ name: "Year", selector: (row) => row.year, sortable: true },
+		{ name: "Id", selector: (row) => row.id, sortable: true },
+		{ name: "Course Name", selector: (row) => row.course, sortable: true },
+		{ name: "Duration", selector: (row) => row.duration, sortable: true },
 		{
 			name: "Actions",
 			selector: (row) => (
@@ -81,8 +81,8 @@ const Courses = () => {
 
 
 	const data = [
-		{ id: 1, name: "Sakthi", course: "Mca", year: 2025 },
-		{ id: 2, name: "vel", course: "Be Cs", year: 2025 },
+		{ id: 1, course: "Mca",duration: "45 mins"},
+		{ id: 2, course: "Be Cs", duration: "45 mins" },
 	];
 
 
@@ -160,14 +160,14 @@ const Courses = () => {
 					{/* Title Card */}
 					<div className="card shadow-sm mb-3 p-3">
 					<div className="d-flex justify-content-between align-items-center">
-						<h2 className="m-0">Students</h2>
+						<h2 className="m-0">Courses</h2>
 						<button 
 							className="btn"
 							style={{backgroundColor:'#08415C',color:'#fff'}} 
 							data-bs-toggle="modal"
 							data-bs-target="#myModal"
 						>
-							Add Students
+							Add Courses
 						</button>
 					</div>
 					</div>
@@ -193,7 +193,7 @@ const Courses = () => {
 					<div className="modal-content">
 					<div className="modal-header">
 						<h5 className="modal-title" id="exampleModalLabel">
-						Add Students
+						Add Courses
 						</h5>
 						<button
 						type="button"
@@ -209,93 +209,31 @@ const Courses = () => {
 						<div className="row">
 							{/* First Row - Two Inputs */}
 							<div className="col-md-6 mb-3">
-							<label htmlFor="username" className="form-label">
-								Name
+							<label htmlFor="coursename" className="form-label">
+								Course Name
 							</label>
 							<input
 								type="text"
 								className="form-control"
-								name="username"
-								placeholder="Student Name"
-								id="username"
+								name="coursename"
+								placeholder="Course Name"
+								id="coursename"
 							/>
 							</div>
 
 							<div className="col-md-6 mb-3">
 							<label htmlFor="email" className="form-label">
-								Email
-							</label>
-							<input
-								type="email"
-								className="form-control"
-								name="email"
-								placeholder="Student Email"
-								id="email"
-							/>
-							</div>
-						</div>
-
-						<div className="row">
-							{/* Second Row - Two More Inputs */}
-							<div className="col-md-6 mb-3">
-							<label htmlFor="phone" className="form-label">
-								Phone
+								Course Duration
 							</label>
 							<input
 								type="text"
 								className="form-control"
-								name="phone"
-								placeholder="Student Phone"
-								id="phone"
-							/>
-							</div>
-
-							<div className="col-md-6 mb-3">
-							<label htmlFor="city" className="form-label">
-								Course
-							</label>
-							<input
-								type="text"
-								className="form-control"
-								name="course"
-								placeholder="Student Course"
-								id="course"
+								name="duration"
+								placeholder="Course Duration"
+								id="duration"
 							/>
 							</div>
 						</div>
-						<div className="row">
-							{/* Second Row - Two More Inputs */}
-							<div className="col-md-6 mb-3">
-							<label htmlFor="phone" className="form-label">
-								Year
-							</label>
-							<input
-								type="number"
-								className="form-control"
-								name="year"
-								placeholder="Student Year"
-								id="year"
-							/>
-							</div>
-						</div>
-
-						{/* <div className="row">
-							<div className="col-md-6 mb-3">
-								<label htmlFor="appliedFor">Position Applied For </label>
-								<select name="appliedFor" id="appliedFor" className="form-control">
-									<option value="" >Select an option</option>
-									<option value="Software Engineer">Software Engineer</option>
-									<option value="Data Scientist">Data Scientist</option>
-									<option value="Product Manager">Product Manager</option>
-									<option value="DevOps Engineer">DevOps Engineer</option>
-									<option value="Cloud Engineer">Cloud Engineer</option>
-									<option value="Cyber Security Engineer">Cyber Security Engineer</option>
-									<option value="Full Stack Developer">Full Stack Developer</option>
-									<option value="Web Developer">Web Developer</option>
-									<option value="Other">Other</option>
-								</select>
-							</div>
-						</div> */}
 						</form>
 					</div>
 
@@ -325,7 +263,7 @@ const Courses = () => {
 					<div className="modal-content">
 					<div className="modal-header">
 						<h5 className="modal-title" id="editModal">
-						Edit Candidate
+						Edit Course
 						</h5>
 						<button
 						type="button"
@@ -342,72 +280,28 @@ const Courses = () => {
 						<div className="row">
 							{/* First Row - Two Inputs */}
 							<div className="col-md-6 mb-3">
-							<label htmlFor="username" className="form-label">
-								Name
+							<label htmlFor="coursename" className="form-label">
+								Course Name
 							</label>
 							<input
 								type="text"
 								className="form-control"
-								name="username"
-								placeholder="Student Name"
-								id="username"
+								name="coursename"
+								placeholder="Course Name"
+								id="coursename"
 							/>
 							</div>
 
 							<div className="col-md-6 mb-3">
 							<label htmlFor="email" className="form-label">
-								Email
-							</label>
-							<input
-								type="email"
-								className="form-control"
-								name="email"
-								placeholder="Student Email"
-								id="email"
-							/>
-							</div>
-						</div>
-
-						<div className="row">
-							{/* Second Row - Two More Inputs */}
-							<div className="col-md-6 mb-3">
-							<label htmlFor="phone" className="form-label">
-								Phone
+								Course Duration
 							</label>
 							<input
 								type="text"
 								className="form-control"
-								name="phone"
-								placeholder="Student Phone"
-								id="phone"
-							/>
-							</div>
-
-							<div className="col-md-6 mb-3">
-							<label htmlFor="city" className="form-label">
-								Course
-							</label>
-							<input
-								type="text"
-								className="form-control"
-								name="course"
-								placeholder="Student Course"
-								id="course"
-							/>
-							</div>
-						</div>
-						<div className="row">
-							{/* Second Row - Two More Inputs */}
-							<div className="col-md-6 mb-3">
-							<label htmlFor="phone" className="form-label">
-								Year
-							</label>
-							<input
-								type="number"
-								className="form-control"
-								name="year"
-								placeholder="Student Year"
-								id="year"
+								name="duration"
+								placeholder="Course Duration"
+								id="duration"
 							/>
 							</div>
 						</div>

@@ -29,6 +29,7 @@ const Teachers = () => {
 	  };
 
 	const columns = [
+		{ name: "Id", selector: (row) => row.id, sortable: true },
 		{ name: "Name", selector: (row) => row.name, sortable: true },
 		{ name: "Course", selector: (row) => row.course, sortable: true },
 		{ name: "Department", selector: (row) => row.department, sortable: true },
