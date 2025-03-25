@@ -16,6 +16,10 @@ const users = [
     { username: "vel", password: "vel@9790" }
 ];
 
+app.get("/",(req,res)=>{
+    res.send("Hello World");
+})
+
 // Login API
 app.post("/login", (req, res) => {
     const { username, password } = req.body;
@@ -25,7 +29,7 @@ app.post("/login", (req, res) => {
     if (user) {
         res.json({ success: true, message: "Login successful!" });
     } else {
-        res.status(401).json({ success: false, message: "Invalid username or password" });
+        res.json({ success: false, message: "Invalid username or password" });
     }
 });
 

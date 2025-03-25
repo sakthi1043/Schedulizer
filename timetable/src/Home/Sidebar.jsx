@@ -118,7 +118,7 @@ const Sidebar = ({ isOpen }) => {
         <ListItem 
           button 
           component={NavLink} 
-          to="/TimeTables" 
+          to="/Timeslots" 
           sx={{
             color: "#D9D9D9",
             "&:hover": { backgroundColor: "#6e8898"},

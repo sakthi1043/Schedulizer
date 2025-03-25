@@ -26,13 +26,13 @@ function Login() {
         {
           Swal.fire({
             title: 'Success!',
-            text: 'Login Successfully',
+            text: (response.data.message),
             icon: 'success',
             confirmButtonText: 'OK'
           });
           navigate('/Home');
         }
-        else
+        else if(!(response.data.success))
         {
           Swal.fire({
             title: 'Error!',

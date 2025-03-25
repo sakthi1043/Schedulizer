@@ -8,6 +8,7 @@ import Home from './Home/Dashboard';
 import Students from './Students/Students';
 import Teachers from './Teachers/Teachers';
 import Courses from './Courses/Courses';
+import Timeslot from './Timeslot/Timeslot';
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
         <Route path="/Students" element={<Students/>} />
         <Route path="/Teachers" element={<Teachers/>}/>
         <Route path="/Courses" element={<Courses/>}/>
+        <Route path="/Timeslots" element={<Timeslot/>}/>
       </Routes>
         
         {/* Add more routes as needed */}
