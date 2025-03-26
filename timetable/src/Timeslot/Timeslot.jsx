@@ -17,8 +17,8 @@ const Timeslot = () => {
     const [isSidebarOpen, setSidebarOpen] = useState(true);
     const [selectedRow, setSelectedRow] = useState(null);
 
-    const [StartTime, setStartTime] = useState(new Date());
-    const [EndTime, setEndTime] = useState(new Date());
+    const [StartTime, setStartTime] = useState();
+    const [EndTime, setEndTime] = useState();
 
     const handleTimeChange = (time) => {
         if (time) setStartTime(time);
@@ -28,10 +28,10 @@ const Timeslot = () => {
     
     
 
-useEffect(() => {
-        setStartTime(currentDate);
-        setEndTime(currentDate);
-    }, []);
+// useEffect(() => {
+//         setStartTime(currentDate);
+//         setEndTime(currentDate);
+//     }, []);
 
     // open the modal and set the selected row
     const handleEdit = (row) => {
@@ -264,32 +264,34 @@ useEffect(() => {
 
                         <div className="row">
                         {/* First Row - Start Time Picker */}
-                            <div className="col-md-6 mb-3">
-                            <label htmlFor="time" style={{ fontWeight: "bold" }}>Start Time</label><br />
-                                <TimePicker
-                                    value={StartTime}
-                                    onChange={handleTimeChange}
-                                    plugins={[<TimePicker position="bottom" />]}
-                                    disableDayPicker
-                                    format="hh:mm A"
-                                    className="form-control"
-                                    style={{ width: '100%' ,height:'35px' }}
-                                />
-                            </div>
+                        <div className="col-md-6 mb-3">
+                            <label htmlFor="startTime" >Start Time (e.g., 10:00 am)</label><br />
+                            <input
+                                type="text"
+                                id="startTime"
+                                value={StartTime}
+                                onChange={(e) => setStartTime(e.target.value)}
+                                placeholder="e.g., 10:00 am"
+                                className="form-control"
+                                style={{ width: '100%', height: '35px' }}
+                            />
+                        </div>
 
-                            {/* End Time Picker */}
-                            <div className="col-md-6 mb-3">
-                            <label htmlFor="time" style={{ fontWeight: "bold" }}>End Time</label><br />
-                                <TimePicker
-                                    value={EndTime}
-                                    onChange={handleTimeChange}
-                                    plugins={[<TimePicker position="bottom" />]}
-                                    disableDayPicker
-                                    format="hh:mm A"
-                                    className="form-control"
-                                    style={{ width: '100%' ,height:'35px' }}
-                                />
-                            </div>
+                        {/* End Time Text Box */}
+                        <div className="col-md-6 mb-3">
+                            <label htmlFor="endTime" >End Time (e.g., 10:00 am)</label><br />
+                            <input
+                                type="text"
+                                id="endTime"
+                                value={EndTime}
+                                onChange={(e) => setEndTime(e.target.value)}
+                                placeholder="e.g., 10:00 am"
+                                className="form-control"
+                                style={{ width: '100%', height: '35px' }}
+                            />
+                        </div>
+
+
                         </div>
                         </form>
                     </div>

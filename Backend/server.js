@@ -27,9 +27,9 @@ app.post("/login", (req, res) => {
     const user = users.find(u => u.username === username && u.password === password);
 
     if (user) {
-        res.json({ success: true, message: "Login successful!" });
+        res.json({ success: true, message: "Login successful!",id:1 });
     } else {
-        res.json({ success: false, message: "Invalid username or password" });
+        res.json({ success: false, message: "Invalid username or password",id:0 });
     }
 });
 
