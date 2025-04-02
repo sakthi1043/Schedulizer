@@ -97,7 +97,7 @@ const Sidebar = ({ isOpen }) => {
         <Divider sx={{ backgroundColor: "#D9D9D9" }} />
 
         {/* Schedules */}
-        <ListItem 
+        {/* <ListItem 
           button 
           component={NavLink} 
           to="/Schedules" 
@@ -110,7 +110,7 @@ const Sidebar = ({ isOpen }) => {
         >
           <ListItemIcon sx={{ color: "#D9D9D9" }}><AssignmentIndIcon /></ListItemIcon>
           <ListItemText primary="Schedules" sx={{ transition: "font-weight 0.3s ease" }} />
-        </ListItem>
+        </ListItem> */}
 
         <Divider sx={{ backgroundColor: "#D9D9D9" }} />
 

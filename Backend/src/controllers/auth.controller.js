@@ -8,64 +8,41 @@ import jwt from "jsonwebtoken"
 import bcrypt from "bcryptjs" // for password hashing
 
 
-export const signup = async (req,res)=>{
+export const register = async (req,res)=>{
 
-    const {fullName,email,password} = req.body;
+    const { name, email, phoneno, password,dob, type, role } = req.body;
 
     try {
-        
-        // Checking whether the password have minimum length of 6 or not.
-        if(password.length < 6)
-        {
-            return res.status(400).json({message:"Password must be minimum length of 6"});
-        }
+    
+        let user = await User.findOne({ email });
+        if (user) return res.status(400).json({ msg: "Email already exists",success:false });
 
-        //  Checking whether the email is already present in the db or not.
-        const user = await User.findOne({email});
+        user = await User.findOne({ phoneno });
+        if (user) return res.status(400).json({ msg: "Phone number already exists",success:false });
 
-        if(user){
-            return res.status(400).json({message:"Email already exists"});
-        }
-
-        // Hash password
+        // Hash the password
         const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password,salt);
+        const hashedPassword = await bcrypt.hash(password, salt);
 
-        //  Add the new user
-        const newUser = new User({
+        // Create a new user
+        user = new User({ name, email, phoneno, password: hashedPassword, type, role });
+        await user.save();
 
-            userName:fullName,
-            password:hashedPassword,
-            email:email,
-        })
+        // Generate JWT Token
+        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
-        if(newUser)
-        {
-            //  Generate JWT Tokens
-            generateTokens(newUser._id,res)
-
-            // save the new user in the table
-            await newUser.save();
-
-            return res.status(201).json({
-                _id:newUser._id,
-                userName : newUser.fullName,
-                email : newUser.email,
-                profilePic : newUser.profilePic
-            });
-        }
-        else
-        {
-            return res.status(400).json({message:" Invalid user data"});
-        }
+        res.json({ 
+            token, 
+            user: { id: user.id, name, email, phoneno,dob, type, role },
+            msg: "User created successfully",
+            success:true
+        });
 
     } catch (error) {
 
         console.log("Error in signup controller : ",error.message);
-        res.status(500).json({message:"Internal server error"});
+        res.status(500).json({message:"Internal server error",success:false});
         
     }
-
-    res.send("Sign up is created");
 };
 

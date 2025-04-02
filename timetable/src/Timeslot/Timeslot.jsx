@@ -337,32 +337,67 @@ const Timeslot = () => {
                     <div className="modal-body">
                         <form>
                         <div className="row">
-                            {/* First Row - Two Inputs */}
-                            <div className="col-md-6 mb-3">
-                            <label htmlFor="coursename" className="form-label">
-                                Course Name
+                        <div className="col-md-6 mb-3">
+                            <label htmlFor="courseid" className="form-label">
+                            Course ID
                             </label>
                             <input
-                                type="text"
-                                className="form-control"
-                                name="coursename"
-                                placeholder="Course Name"
-                                id="coursename"
+                            type="text"
+                            className="form-control"
+                            name="courseid"
+                            placeholder="Course ID"
+                            id="courseid"
                             />
-                            </div>
+                        </div>
 
-                            <div className="col-md-6 mb-3">
-                            <label htmlFor="email" className="form-label">
-                                Course Duration
+                        {/* Second Row - Day Select */}
+                        <div className="col-md-6 mb-3">
+                            <label htmlFor="day" className="form-label">
+                            Day
                             </label>
+                            <select
+                            className="form-control"
+                            name="day"
+                            id="day"
+                            >
+                            <option value="">Select Day</option>
+                            <option value="monday">Monday</option>
+                            <option value="tuesday">Tuesday</option>
+                            <option value="wednesday">Wednesday</option>
+                            <option value="thursday">Thursday</option>
+                            <option value="friday">Friday</option>
+                            </select>
+                        </div>
+                        </div>
+
+                        <div className="row">
+                        {/* First Row - Start Time Picker */}
+                        <div className="col-md-6 mb-3">
+                            <label htmlFor="startTime" >Start Time (e.g., 10:00 am)</label><br />
                             <input
                                 type="text"
+                                id="startTime"
+                                value={StartTime}
+                                onChange={(e) => setStartTime(e.target.value)}
+                                placeholder="e.g., 10:00 am"
                                 className="form-control"
-                                name="duration"
-                                placeholder="Course Duration"
-                                id="duration"
+                                style={{ width: '100%', height: '35px' }}
                             />
-                            </div>
+                        </div>
+
+                        {/* End Time Text Box */}
+                        <div className="col-md-6 mb-3">
+                            <label htmlFor="endTime" >End Time (e.g., 10:00 am)</label><br />
+                            <input
+                                type="text"
+                                id="endTime"
+                                value={EndTime}
+                                onChange={(e) => setEndTime(e.target.value)}
+                                placeholder="e.g., 10:00 am"
+                                className="form-control"
+                                style={{ width: '100%', height: '35px' }}
+                            />
+                        </div>
                         </div>
                         </form>
                     </div>

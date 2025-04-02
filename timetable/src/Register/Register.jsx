@@ -3,6 +3,7 @@ import React,{useState} from 'react';
 import Swal from 'sweetalert2';
 import styles from './Register.module.css'
 import { useNavigate,Link } from 'react-router-dom';
+import axios from "axios";
 
 import timeImage from '../Images/2.jpg'; // Make sure to import your logo image
 
@@ -15,10 +16,11 @@ const RegistrationForm = () => {
     const [phone, setPhone] = useState(''); // Phone Number state
     const [email, setEmail] = useState(''); // Email state
     const [error, setError] = useState(''); // Error message state
+    const [type,setType]=useState('User');
     const navigate=useNavigate();
 
     // Handle form submission
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setError(''); // Reset error message
 
@@ -60,14 +62,41 @@ const RegistrationForm = () => {
         return;
         }
 
-        // If no validation errors
-        Swal.fire({
-            title: 'Success!',
-            text: 'Login Successfully',
-            icon: 'success',
+        try
+        {
+          const response=await axios.post("http://localhost:8000/api/auth/register",{
+            name:username,email:email,phoneno:phone,password:password,dob:dob,type:type,role:role});
+          
+
+          if(response.data.success)
+          {
+            Swal.fire({
+              title: 'Success!',
+              text: 'Registered Successfully',
+              icon: 'success',
+              confirmButtonText: 'OK'
+            });
+            navigate('/');
+          }
+          else if(!(response.data.success))
+          {
+            Swal.fire({
+              title: 'Error!',
+              text: 'Registration Failed',
+              icon: 'error',
+              confirmButtonText: 'OK'
+            });
+          }
+        }
+        catch
+        {
+          Swal.fire({
+            title: 'Error!',
+            text: 'Login failed.',
+            icon: 'error',
             confirmButtonText: 'OK'
-        });
-        navigate('/');
+          });
+        }
     };
   
     return (
