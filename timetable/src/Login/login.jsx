@@ -20,7 +20,7 @@ function Login() {
     e.preventDefault();
       try
       {
-        const response=await axios.post("http://localhost:5000/login",{username,password});
+        const response=await axios.post("http://localhost:8000/api/auth/login",{name:username,password:password});
 
         if(response.data.success)
         {
@@ -36,7 +36,7 @@ function Login() {
         {
           Swal.fire({
             title: 'Error!',
-            text: 'User name or password is incorrect.',
+            text: (response.data.message),
             icon: 'error',
             confirmButtonText: 'OK'
           });

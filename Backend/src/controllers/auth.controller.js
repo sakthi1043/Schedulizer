@@ -25,7 +25,7 @@ export const register = async (req,res)=>{
         const hashedPassword = await bcrypt.hash(password, salt);
 
         // Create a new user
-        user = new User({ name, email, phoneno, password: hashedPassword, type, role });
+        user = new User({ name, email, phoneno, password: hashedPassword,dob, type, role });
         await user.save();
 
         // Generate JWT Token
@@ -44,5 +44,35 @@ export const register = async (req,res)=>{
         res.status(500).json({message:"Internal server error",success:false});
         
     }
+};
+
+export const login = async (req, res) => {
+
+    const { name, password } = req.body;
+    try {
+        // Find user by email
+        const user = await User.findOne({ name });
+        if (!user) {
+          return res.json({ message: 'Invalid credentials',success:false });
+        }
+    
+        // Compare password with hashed password
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+          return res.json({ message: 'Invalid credentials',success:false });
+        }
+    
+        // Create JWT token
+        const token = jwt.sign({ userId: user._id }, 'your-secret-key', { expiresIn: '1h' });
+    
+        res.json({
+          message: 'Login successful',
+          success:true,
+          token,
+        });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Server error' });
+      }
 };
 

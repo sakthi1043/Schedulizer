@@ -6,8 +6,8 @@ const UserSchema = new mongoose.Schema({
     phoneno: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     dob: { type: Date, required: true },
-    type: { type: String, enum: ["admin", "user", "guest"], required: true },
-    role: { type: String, enum: ["student", "teacher", "staff"], required: true }
+    type: { type: String, enum: ["Admin", "User"], required: true },
+    role: { type: String, enum: ["Student", "Teacher"], required: true }
 }, { timestamps: true });
 
 const User=mongoose.model("User",UserSchema);
