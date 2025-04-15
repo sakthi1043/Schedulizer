@@ -31,9 +31,10 @@ const Students = () => {
 	  };
 
 	const columns = [
+		{ name: "Id", selector: (row) => row.id, sortable: true },
 		{ name: "Name", selector: (row) => row.name, sortable: true },
-		{ name: "Age", selector: (row) => row.age, sortable: true },
-		{ name: "City", selector: (row) => row.city, sortable: true },
+		{ name: "Department", selector: (row) => row.course, sortable: true },
+		{ name: "Year", selector: (row) => row.year, sortable: true },
 		{
 			name: "Actions",
 			selector: (row) => (
@@ -84,8 +85,8 @@ const Students = () => {
 
 
 	const data = [
-		{ id: 1, name: "John Doe", age: 25, city: "New York" },
-		{ id: 2, name: "Jane Doe", age: 30, city: "Los Angeles" },
+		{ id: 1, name: "Sakthi", course: "Mca", year: 2025 },
+		{ id: 2, name: "vel", course: "Be Cs", year: 2025 },
 	];
 
 
@@ -99,7 +100,7 @@ const Students = () => {
 		},
 		headRow: {
 		style: {
-			backgroundColor: "#4c4c4c",
+			backgroundColor: "#133C55",
 			color: "#fff",
 			fontSize: "16px",
 			fontWeight: "bold",
@@ -163,13 +164,14 @@ const Students = () => {
 					{/* Title Card */}
 					<div className="card shadow-sm mb-3 p-3">
 					<div className="d-flex justify-content-between align-items-center">
-						<h2 className="m-0">Candidate</h2>
+						<h2 className="m-0">Students</h2>
 						<button 
-							className="btn btn-dark" 
+							className="btn"
+							style={{backgroundColor:'#08415C',color:'#fff'}} 
 							data-bs-toggle="modal"
 							data-bs-target="#myModal"
 						>
-							Add Candidate
+							Add Students
 						</button>
 					</div>
 					</div>
@@ -195,7 +197,7 @@ const Students = () => {
 					<div className="modal-content">
 					<div className="modal-header">
 						<h5 className="modal-title" id="exampleModalLabel">
-						Add Candidate
+						Add Students
 						</h5>
 						<button
 						type="button"
@@ -212,13 +214,13 @@ const Students = () => {
 							{/* First Row - Two Inputs */}
 							<div className="col-md-6 mb-3">
 							<label htmlFor="username" className="form-label">
-								Username
+								Name
 							</label>
 							<input
 								type="text"
 								className="form-control"
 								name="username"
-								placeholder="Candidate Name"
+								placeholder="Student Name"
 								id="username"
 							/>
 							</div>
@@ -231,7 +233,7 @@ const Students = () => {
 								type="email"
 								className="form-control"
 								name="email"
-								placeholder="Candidate Email"
+								placeholder="Student Email"
 								id="email"
 							/>
 							</div>
@@ -247,26 +249,41 @@ const Students = () => {
 								type="text"
 								className="form-control"
 								name="phone"
-								placeholder="Candidate Phone"
+								placeholder="Student Phone"
 								id="phone"
 							/>
 							</div>
 
 							<div className="col-md-6 mb-3">
 							<label htmlFor="city" className="form-label">
-								City
+								Course
 							</label>
 							<input
 								type="text"
 								className="form-control"
-								name="city"
-								placeholder="Candidate City"
-								id="city"
+								name="course"
+								placeholder="Student Course"
+								id="course"
+							/>
+							</div>
+						</div>
+						<div className="row">
+							{/* Second Row - Two More Inputs */}
+							<div className="col-md-6 mb-3">
+							<label htmlFor="phone" className="form-label">
+								Year
+							</label>
+							<input
+								type="number"
+								className="form-control"
+								name="year"
+								placeholder="Student Year"
+								id="year"
 							/>
 							</div>
 						</div>
 
-						<div className="row">
+						{/* <div className="row">
 							<div className="col-md-6 mb-3">
 								<label htmlFor="appliedFor">Position Applied For </label>
 								<select name="appliedFor" id="appliedFor" className="form-control">
@@ -282,7 +299,7 @@ const Students = () => {
 									<option value="Other">Other</option>
 								</select>
 							</div>
-						</div>
+						</div> */}
 						</form>
 					</div>
 
@@ -302,7 +319,7 @@ const Students = () => {
 				{/* Edit candidate Modal */}
 				<div
 				className="modal fade"
-				id="myModal"
+				id="editModal"
 				tabIndex="-1"
 				aria-labelledby="exampleModalLabel"
 				aria-hidden="true"
@@ -323,24 +340,22 @@ const Students = () => {
 					</div>
 
 					{/* Modal Body */}
+					{/* Modal Body */}
 					<div className="modal-body">
 						<form>
 						<div className="row">
 							{/* First Row - Two Inputs */}
 							<div className="col-md-6 mb-3">
-								
-								<label htmlFor="username" className="form-label">
-									Username
-								</label>									
-								<input
-									type="text"
-									className="form-control"
-									name="username"
-									placeholder="Candidate Name"
-									id="username"
-																	
-								/>									
-							
+							<label htmlFor="username" className="form-label">
+								Name
+							</label>
+							<input
+								type="text"
+								className="form-control"
+								name="username"
+								placeholder="Student Name"
+								id="username"
+							/>
 							</div>
 
 							<div className="col-md-6 mb-3">
@@ -351,7 +366,7 @@ const Students = () => {
 								type="email"
 								className="form-control"
 								name="email"
-								placeholder="Candidate Email"
+								placeholder="Student Email"
 								id="email"
 							/>
 							</div>
@@ -367,40 +382,37 @@ const Students = () => {
 								type="text"
 								className="form-control"
 								name="phone"
-								placeholder="Candidate Phone"
+								placeholder="Student Phone"
 								id="phone"
 							/>
 							</div>
 
 							<div className="col-md-6 mb-3">
 							<label htmlFor="city" className="form-label">
-								City
+								Course
 							</label>
 							<input
 								type="text"
 								className="form-control"
-								name="city"
-								placeholder="Candidate City"
-								id="city"
+								name="course"
+								placeholder="Student Course"
+								id="course"
 							/>
 							</div>
 						</div>
-
 						<div className="row">
+							{/* Second Row - Two More Inputs */}
 							<div className="col-md-6 mb-3">
-								<label htmlFor="appliedFor">Position Applied For </label>
-								<select name="appliedFor" id="appliedFor" className="form-control">
-									<option value="" >Select an option</option>
-									<option value="Software Engineer">Software Engineer</option>
-									<option value="Data Scientist">Data Scientist</option>
-									<option value="Product Manager">Product Manager</option>
-									<option value="DevOps Engineer">DevOps Engineer</option>
-									<option value="Cloud Engineer">Cloud Engineer</option>
-									<option value="Cyber Security Engineer">Cyber Security Engineer</option>
-									<option value="Full Stack Developer">Full Stack Developer</option>
-									<option value="Web Developer">Web Developer</option>
-									<option value="Other">Other</option>
-								</select>
+							<label htmlFor="phone" className="form-label">
+								Year
+							</label>
+							<input
+								type="number"
+								className="form-control"
+								name="year"
+								placeholder="Student Year"
+								id="year"
+							/>
 							</div>
 						</div>
 						</form>

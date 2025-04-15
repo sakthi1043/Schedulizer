@@ -6,6 +6,7 @@ import timeImage from '../Images/pngtree-time-clock-schedule-vector-png-image_15
 import styles from './login.module.css';
 import 'animate.css'; // Import Animate.css
 import WOW from 'wow.js'; // Import Wow.js
+import axios from "axios";
 
 function Login() {
 
@@ -15,26 +16,60 @@ function Login() {
   const[password,setPassword]=React.useState('');
   const navigate=useNavigate();
 
-  const handleLogin=(e)=>{
+  const handleLogin= async (e)=>{
     e.preventDefault();
-      if(username=='sakthi' && password=='sakthi@1043'){
+      try
+      {
+        const response=await axios.post("http://localhost:8000/api/auth/login",{name:username,password:password});
+
+        if(response.data.success)
+        {
           Swal.fire({
             title: 'Success!',
-            text: 'Login Successfully',
+            text: (response.data.message),
             icon: 'success',
             confirmButtonText: 'OK'
           });
           navigate('/Home');
         }
-      else
+        else if(!(response.data.success))
+        {
+          Swal.fire({
+            title: 'Error!',
+            text: (response.data.message),
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
+        }
+      }
+      catch(error)
       {
         Swal.fire({
           title: 'Error!',
-          text: 'User name or password is incorrect.',
+          text: 'Login failed.',
           icon: 'error',
           confirmButtonText: 'OK'
         });
       }
+
+      // if(username=='sakthi' && password=='sakthi@1043'){
+      //     Swal.fire({
+      //       title: 'Success!',
+      //       text: 'Login Successfully',
+      //       icon: 'success',
+      //       confirmButtonText: 'OK'
+      //     });
+      //     navigate('/Home');
+      //   }
+      // else
+      // {
+      //   Swal.fire({
+      //     title: 'Error!',
+      //     text: 'User name or password is incorrect.',
+      //     icon: 'error',
+      //     confirmButtonText: 'OK'
+      //   });
+      // }
     }
 
 
