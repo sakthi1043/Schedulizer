@@ -72,7 +72,7 @@ const RegistrationForm = () => {
           {
             Swal.fire({
               title: 'Success!',
-              text: 'Registered Successfully',
+              text: (response.data.msg),
               icon: 'success',
               confirmButtonText: 'OK'
             });
@@ -82,7 +82,7 @@ const RegistrationForm = () => {
           {
             Swal.fire({
               title: 'Error!',
-              text: 'Registration Failed',
+              text: (response.data.msg),
               icon: 'error',
               confirmButtonText: 'OK'
             });

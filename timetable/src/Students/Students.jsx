@@ -1,14 +1,17 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import Sidebar from "../Home/Sidebar";
 import Header from "../Home/Header";
 import { Box } from "@mui/material";
+import Swal from 'sweetalert2';
 import "../Home/AdminDashboard.css";
 import DataTable from "react-data-table-component";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min"; // Required for modal functionality
+
 import { FaTrash } from "react-icons/fa"; // fror icons
 import {  FaPen } from "react-icons/fa";
 import { Modal } from "bootstrap";
+import axios from "axios";
 
 
 
@@ -17,10 +20,79 @@ const Students = () => {
 	const [isSidebarOpen, setSidebarOpen] = useState(true);
 	const [selectedRow, setSelectedRow] = useState(null);
 
+	const [batchList, setBatchList] = useState([]);
+	const [students, setStudents] = useState([]);
+	const [selectedStudent, setSelectedStudent] = useState(null);
+
+
+	
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const [batchRes, studentRes] = await Promise.all([
+					axios.get('http://localhost:8000/api/batches'),
+					axios.get('http://localhost:8000/api/Students'),
+				]);
+
+				console.log("Student Response:", studentRes.data);
+				console.log("Batch Response:", batchRes.data);
+
+				const batchList = Array.isArray(batchRes.data) ? batchRes.data : batchRes.data.batches || [];
+        		const studentList = Array.isArray(studentRes.data.data) ? studentRes.data.data : [];
+			
+				console.log("studentList:",studentList);
+				console.log("BatchList: ",batchList);
+				const batchMap = {};
+				batchList.forEach(batch => {
+					batchMap[batch._id] = batch.name;
+				});
+
+				const enrichedStudents = studentList.map(student => ({
+					...student,
+					batchName: batchMap[student.batch] || "Unknown"
+				}));
+
+				setStudents(enrichedStudents);
+				setBatchList(batchList);
+				// console.log(students);
+				// console.log(batchList);
+			} catch (error) {
+				console.error("Error fetching data:", error);
+			}
+		};
+
+		fetchData();
+	}, []); // Empty dependency array to run once on mount
+
+
+	const [formData, setFormData] = useState({
+		name: "",
+		email: "",
+		phone: "",
+		year: "",
+		rollNumber:"",
+		batch: "",
+	});
+
+	const handleChange = (e) => {
+		setFormData({
+			...formData,
+			[e.target.name]: e.target.value,
+		});
+	};
+
 	// open the modal and set the selected row
-	const handleEdit = (row) => {
-		setSelectedRow(row);
-		// console.log(row);
+	const handleEdit = (student) => {
+		setSelectedStudent(student);
+		setFormData({
+			name: student.name || "",
+			email: student.email || "",
+			rollNumber: student.rollNumber || "",
+			year: student.year || "",
+			batch: student.batch || "",
+			phone:student.phone || ""
+		  });
+		// console.log(selectedStudent);
 
 		const modalElement = document.getElementById("editModal");
 		
@@ -30,11 +102,116 @@ const Students = () => {
 
 	  };
 
+	  const handleAdd = async (e) => {
+		e.preventDefault();
+	
+		try {
+			const response = await axios.post("http://localhost:8000/api/students/Add", formData);
+			
+			// console.log("Student added:", response.data);
+			if(response.data.success)
+			{
+				Swal.fire({
+					title: 'Success!',
+					text: (response.data.msg),
+					icon: 'success',
+					confirmButtonText: 'OK'
+				});
+				// console.log(response.data.records,response.data.msg);
+
+				// Reset the form
+				setFormData({
+					name: "",
+					email: "",
+					phone: "",
+					year: "",
+					rollNumber:"",
+					batch: ""
+				});
+
+				// Close the modal
+				const modalElement = document.getElementById("myModal");
+				const modal = Modal.getInstance(modalElement) || new Modal(modalElement);
+				modal.hide();
+
+			}
+			else if(!(response.data.success))
+			{
+				Swal.fire({
+					title: 'Error!',
+					text: (response.data.msg),
+					icon: 'error',
+					confirmButtonText: 'OK'
+				});
+			}
+			
+	
+			
+	
+			// Refresh data if needed
+		} catch (error) {
+			Swal.fire({
+				title: 'Error!',
+				text: 'Insertion Failed.',
+				icon: 'error',
+				confirmButtonText: 'OK'
+			});
+		}
+	};
+
+	const handleEditForm = async (e) => {
+		e.preventDefault();
+	
+		if (selectedStudent) {
+		  try {
+			const res = await axios.put(
+			  `http://localhost:8000/api/Students/Edit/${selectedStudent._id}`,
+			  formData
+			);
+			const updated = res.data;
+	
+			setStudents((prev) =>
+			  prev.map((student) =>
+				student._id === selectedStudent._id ? { ...student, ...updated } : student
+			  )
+			);
+			setSelectedStudent(null);
+			setFormData({
+			  name: "",
+			  email: "",
+			  rollNumber: "",
+			  year: "",
+			  batch: "",
+			});
+			alert("Edited");
+		  } catch (error) {
+			console.error("Update error:", error);
+		  }
+		}
+	  };
+	
+	
+	
+	const clearForm=()=>{
+		setSelectedStudent(null);
+		setFormData(
+			{
+				name: "",
+				email: "",
+				phone: "",
+				year: "",
+				rollNumber:"",
+				batch: "",
+			}
+		)
+	}
+
 	const columns = [
-		{ name: "Id", selector: (row) => row.id, sortable: true },
-		{ name: "Name", selector: (row) => row.name, sortable: true },
-		{ name: "Department", selector: (row) => row.course, sortable: true },
-		{ name: "Year", selector: (row) => row.year, sortable: true },
+		
+		{ name: "Name", selector: row => row.name, sortable: true },
+		{ name: "Roll Number", selector: row => row.rollNumber, sortable: true },
+		{ name: "Year", selector: row => row.year, sortable: true },
+		{ name: "Batch", selector: row => row.batchName, sortable: true },
 		{
 			name: "Actions",
 			selector: (row) => (
@@ -58,7 +235,7 @@ const Students = () => {
 				<FaPen color="green" />
 				</button>
 				<button
-				onClick={() => handleDelete(row.id)}
+				onClick={() => handleDelete(row._id)}
 				style={{
 					marginRight: "10px",
 					cursor: "pointer",
@@ -170,21 +347,22 @@ const Students = () => {
 							style={{backgroundColor:'#08415C',color:'#fff'}} 
 							data-bs-toggle="modal"
 							data-bs-target="#myModal"
+							onClick={clearForm}
 						>
 							Add Students
 						</button>
 					</div>
 					</div>
-
+					
 					{/* Data Table Card */}
 					<div className="card shadow-sm p-3">
-					<DataTable columns={columns} data={data} pagination customStyles={customStyles} />
+					<DataTable columns={columns} data={students} pagination customStyles={customStyles} />
 					</div>
 				</div>
 				</div>
 			</div>
 
-			{/* Add candidate Modal */}
+			{/* Add Student Modal */}
 			<div
 				className="modal fade"
 				id="myModal"
@@ -209,19 +387,21 @@ const Students = () => {
 
 					{/* Modal Body */}
 					<div className="modal-body">
-						<form>
+						<form onSubmit={handleAdd} method="POST">
 						<div className="row">
 							{/* First Row - Two Inputs */}
 							<div className="col-md-6 mb-3">
-							<label htmlFor="username" className="form-label">
+							<label htmlFor="name" className="form-label">
 								Name
 							</label>
 							<input
 								type="text"
 								className="form-control"
-								name="username"
+								name="name"
 								placeholder="Student Name"
 								id="username"
+								value={formData.name}
+								onChange={handleChange}
 							/>
 							</div>
 
@@ -235,6 +415,8 @@ const Students = () => {
 								name="email"
 								placeholder="Student Email"
 								id="email"
+								value={formData.email}
+								onChange={handleChange}
 							/>
 							</div>
 						</div>
@@ -242,29 +424,34 @@ const Students = () => {
 						<div className="row">
 							{/* Second Row - Two More Inputs */}
 							<div className="col-md-6 mb-3">
-							<label htmlFor="phone" className="form-label">
-								Phone
-							</label>
-							<input
-								type="text"
-								className="form-control"
-								name="phone"
-								placeholder="Student Phone"
-								id="phone"
-							/>
+								<label htmlFor="rollNumber" className="form-label">Roll Number</label>
+								<input
+									type="text"
+									className="form-control"
+									name="rollNumber"
+									placeholder="Student Roll Number"
+									id="rollNumber"
+									value={formData.rollNumber}
+									onChange={handleChange}
+								/>
 							</div>
 
 							<div className="col-md-6 mb-3">
-							<label htmlFor="city" className="form-label">
-								Course
-							</label>
-							<input
-								type="text"
+							<label htmlFor="batch" className="form-label">Batch</label>
+								<select
+								name="batch"
 								className="form-control"
-								name="course"
-								placeholder="Student Course"
-								id="course"
-							/>
+								id="batch"
+								value={formData.batch}
+								onChange={handleChange}
+								>
+								<option value="">Select Batch</option>
+								{batchList.map(batch => (
+									<option key={batch._id} value={batch._id}>
+									{batch.name}
+									</option>
+								))}
+								</select>
 							</div>
 						</div>
 						<div className="row">
@@ -279,6 +466,22 @@ const Students = () => {
 								name="year"
 								placeholder="Student Year"
 								id="year"
+								value={formData.year}
+								onChange={handleChange}
+							/>
+							</div>
+							<div className="col-md-6 mb-3">
+							<label htmlFor="phone" className="form-label">
+								Phone
+							</label>
+							<input
+								type="text"
+								className="form-control"
+								name="phone"
+								placeholder="Student Phone"
+								id="phone"
+								value={formData.phone}
+								onChange={handleChange}
 							/>
 							</div>
 						</div>
@@ -300,21 +503,27 @@ const Students = () => {
 								</select>
 							</div>
 						</div> */}
-						</form>
-					</div>
+						
 
 					{/* Modal Footer with Buttons Aligned to End */}
 					<div className="modal-footer d-flex justify-content-end">
 						<button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
 						Close
 						</button>
-						<button type="button" className="btn btn-primary">
+						<button type="submit" className="btn btn-primary">
 						Submit
 						</button>
+						
 					</div>
+					</form>
 					</div>
+					
+					</div>
+					
 				</div>
+				
 				</div>
+				
 			
 				{/* Edit candidate Modal */}
 				<div
@@ -342,20 +551,22 @@ const Students = () => {
 					{/* Modal Body */}
 					{/* Modal Body */}
 					<div className="modal-body">
-						<form>
+						<form onSubmit={handleEditForm} method="POST">
 						<div className="row">
 							{/* First Row - Two Inputs */}
 							<div className="col-md-6 mb-3">
-							<label htmlFor="username" className="form-label">
+							<label htmlFor="name" className="form-label">
 								Name
 							</label>
 							<input
 								type="text"
 								className="form-control"
-								name="username"
+								name="name"
 								placeholder="Student Name"
 								id="username"
-							/>
+								value={formData.name}
+								onChange={handleChange}
+      						/>
 							</div>
 
 							<div className="col-md-6 mb-3">
@@ -368,36 +579,41 @@ const Students = () => {
 								name="email"
 								placeholder="Student Email"
 								id="email"
-							/>
+								value={formData.email}
+								onChange={handleChange}/>
 							</div>
 						</div>
 
 						<div className="row">
 							{/* Second Row - Two More Inputs */}
 							<div className="col-md-6 mb-3">
-							<label htmlFor="phone" className="form-label">
-								Phone
-							</label>
-							<input
-								type="text"
-								className="form-control"
-								name="phone"
-								placeholder="Student Phone"
-								id="phone"
-							/>
+								<label htmlFor="rollNumber" className="form-label">Roll Number</label>
+								<input
+									type="text"
+									className="form-control"
+									name="rollNumber"
+									placeholder="Student Roll Number"
+									id="rollNumber"
+									value={formData.rollNumber}
+									onChange={handleChange}/>
 							</div>
 
 							<div className="col-md-6 mb-3">
-							<label htmlFor="city" className="form-label">
-								Course
-							</label>
-							<input
-								type="text"
+							<label htmlFor="batch" className="form-label">Batch</label>
+								<select
+								name="batch"
 								className="form-control"
-								name="course"
-								placeholder="Student Course"
-								id="course"
-							/>
+								id="batch"
+								value={formData.batch}
+								onChange={handleChange}
+								>
+								<option value="">Select Batch</option>
+								{batchList.map(batch => (
+									<option key={batch._id} value={batch._id}>
+									{batch.name}
+									</option>
+								))}
+								</select>
 							</div>
 						</div>
 						<div className="row">
@@ -412,20 +628,35 @@ const Students = () => {
 								name="year"
 								placeholder="Student Year"
 								id="year"
-							/>
+								value={formData.year}
+								onChange={handleChange}/>
+							</div>
+							<div className="col-md-6 mb-3">
+							<label htmlFor="phone" className="form-label">
+								Phone
+							</label>
+							<input
+								type="text"
+								className="form-control"
+								name="phone"
+								placeholder="Student Phone"
+								id="phone"
+								value={formData.phone}
+								onChange={handleChange}/>
 							</div>
 						</div>
-						</form>
-					</div>
+						
 
 					{/* Modal Footer with Buttons Aligned to End */}
 					<div className="modal-footer d-flex justify-content-end">
 						<button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
 						Close
 						</button>
-						<button type="button" className="btn btn-primary">
+						<button type="submit" className="btn btn-primary">
 						Submit
 						</button>
+					</div>
+					</form>
 					</div>
 					</div>
 				</div>

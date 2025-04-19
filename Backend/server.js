@@ -3,6 +3,8 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import authRoute from "./src/routes/auth.route.js";
+import studRoute from "./src/routes/stud.route.js";
+import batchRoutes from "./src/routes/batch.route.js";
 //Db connection
 import { connectDB } from "./src/lib/db.js";
 
@@ -45,6 +47,9 @@ app.use(cors({
 
 // Start Server
 app.use("/api/auth",authRoute);
+app.use("/api/Students",studRoute);
+app.use("/api/batches", batchRoutes);
+
 
 app.listen(PORT, () => {
     connectDB();

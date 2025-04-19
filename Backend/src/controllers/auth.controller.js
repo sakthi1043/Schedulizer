@@ -15,10 +15,10 @@ export const register = async (req,res)=>{
     try {
     
         let user = await User.findOne({ email });
-        if (user) return res.status(400).json({ msg: "Email already exists",success:false });
+        if (user) return res.json({ msg: "Email already exists",success:false });
 
         user = await User.findOne({ phoneno });
-        if (user) return res.status(400).json({ msg: "Phone number already exists",success:false });
+        if (user) return res.json({ msg: "Phone number already exists",success:false });
 
         // Hash the password
         const salt = await bcrypt.genSalt(10);
