@@ -7,10 +7,10 @@ import "../Home/AdminDashboard.css";
 import DataTable from "react-data-table-component";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min"; // Required for modal functionality
-
+import Modal from 'bootstrap/js/dist/modal';
 import { FaTrash } from "react-icons/fa"; // fror icons
 import {  FaPen } from "react-icons/fa";
-import { Modal } from "bootstrap";
+// import { Modal } from "bootstrap";
 import axios from "axios";
 
 
@@ -99,7 +99,7 @@ const Students = () => {
 		const modal  = new Modal(modalElement);
 
 		modal.show();
-
+		
 	  };
 
 	  const handleAdd = async (e) => {
@@ -183,6 +183,13 @@ const Students = () => {
 			  year: "",
 			  batch: "",
 			});
+
+			const modalElement = document.getElementById("editModal");
+
+			// // Use Bootstrap’s built-in Modal class
+			// const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+			// modal.hide();
+
 			alert("Edited");
 		  } catch (error) {
 			console.error("Update error:", error);
@@ -530,7 +537,7 @@ const Students = () => {
 				className="modal fade"
 				id="editModal"
 				tabIndex="-1"
-				aria-labelledby="exampleModalLabel"
+				aria-labelledby="editModalLabel"
 				aria-hidden="true"
 				>
 				<div className="modal-dialog modal-lg modal-dialog-centered">

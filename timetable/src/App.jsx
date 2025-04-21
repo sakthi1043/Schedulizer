@@ -1,5 +1,6 @@
 import logo from './assets/logo.svg';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import "bootstrap/dist/js/bootstrap.bundle.min"; 
 import './App.css';
 import Login  from './Login/login';
 import RegistrationForm from './Register/Register';
