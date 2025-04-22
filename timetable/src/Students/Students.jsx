@@ -111,7 +111,12 @@ const Students = () => {
 			// console.log("Student added:", response.data);
 			if(response.data.success)
 			{
-				Swal.fire({
+				// Close the modal
+				const modalElement = document.getElementById("myModal");
+				const modal = Modal.getInstance(modalElement) || new Modal(modalElement);
+				modal.hide();
+
+				await Swal.fire({
 					title: 'Success!',
 					text: (response.data.msg),
 					icon: 'success',
@@ -129,15 +134,13 @@ const Students = () => {
 					batch: ""
 				});
 
-				// Close the modal
-				const modalElement = document.getElementById("myModal");
-				const modal = Modal.getInstance(modalElement) || new Modal(modalElement);
-				modal.hide();
+				window.location.reload();
+				
 
 			}
 			else if(!(response.data.success))
 			{
-				Swal.fire({
+				await Swal.fire({
 					title: 'Error!',
 					text: (response.data.msg),
 					icon: 'error',
@@ -169,33 +172,102 @@ const Students = () => {
 			  formData
 			);
 			const updated = res.data;
-	
-			setStudents((prev) =>
-			  prev.map((student) =>
-				student._id === selectedStudent._id ? { ...student, ...updated } : student
-			  )
-			);
-			setSelectedStudent(null);
-			setFormData({
-			  name: "",
-			  email: "",
-			  rollNumber: "",
-			  year: "",
-			  batch: "",
-			});
 
-			const modalElement = document.getElementById("editModal");
+			if(res.data.success)
+			{
+				setStudents((prev) =>
+					prev.map((student) =>
+					  student._id === selectedStudent._id ? { ...student, ...updated } : student
+					)
+				  );
+				  setSelectedStudent(null);
+				  setFormData({
+					name: "",
+					email: "",
+					rollNumber: "",
+					year: "",
+					batch: "",
+				  });
 
-			// // Use Bootstrap’s built-in Modal class
-			// const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
-			// modal.hide();
+				const modalElement = document.getElementById("editModal");
+				const modal = Modal.getInstance(modalElement) || new Modal(modalElement);
+				modal.hide();
 
-			alert("Edited");
+				await Swal.fire({
+					title: 'Success!',
+					text: (res.data.msg),
+					icon: 'success',
+					confirmButtonText: 'OK'
+				});
+				window.location.reload();
+			}
+			else
+			{
+				await Swal.fire({
+					title: 'Error!',
+					text: (res.data.msg),
+					icon: 'error',
+					confirmButtonText: 'OK'
+				});
+			}
 		  } catch (error) {
-			console.error("Update error:", error);
+			// console.log(error)
+			Swal.fire({
+				title: 'Error!',
+				text: 'Edit Error.',
+				icon: 'error',
+				confirmButtonText: 'OK'
+			});
 		  }
 		}
 	  };
+
+	  const handleDelete = async(id,name) => {
+		try {
+			// Optional: Add confirmation dialog
+			
+			const confirmResult = await Swal.fire({
+				title: 'Are you sure?',
+				text: `You want to delete ${name}'s record?`,
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				confirmButtonText: 'Yes, delete it!'
+			  });
+		  
+			  if (!confirmResult.isConfirmed) return;
+		
+			const response = await axios.delete(`http://localhost:8000/api/Students/Delete/${id}`);
+		
+			if (response.data.success) {
+				await Swal.fire({
+					title: 'Success!',
+					text: (response.data.msg),
+					icon: 'success',
+					confirmButtonText: 'OK'
+				});
+
+				window.location.reload();
+			} 
+			else {
+				await Swal.fire({
+					title: 'Error!',
+					text: (response.data.msg),
+					icon: 'error',
+					confirmButtonText: 'OK'
+				});
+			}
+		  } catch (error) {
+			
+			Swal.fire({
+				title: 'Error!',
+				text: (error),
+				icon: 'error',
+				confirmButtonText: 'OK'
+			});
+		  }
+	};
 	
 	
 	
@@ -242,7 +314,7 @@ const Students = () => {
 				<FaPen color="green" />
 				</button>
 				<button
-				onClick={() => handleDelete(row._id)}
+				onClick={() => handleDelete(row._id,row.name)}
 				style={{
 					marginRight: "10px",
 					cursor: "pointer",
@@ -265,12 +337,6 @@ const Students = () => {
 			button: true,
 		}
 		
-	];
-
-
-	const data = [
-		{ id: 1, name: "Sakthi", course: "Mca", year: 2025 },
-		{ id: 2, name: "vel", course: "Be Cs", year: 2025 },
 	];
 
 
@@ -325,13 +391,6 @@ const Students = () => {
 			fontWeight: "bold",
 		},
 		},
-	};
-
-
-	
-	
-	const handleDelete = (id) => {
-		alert(`Deleting record with ID ${id}`);
 	};
 	
 

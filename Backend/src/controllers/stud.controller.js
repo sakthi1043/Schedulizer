@@ -61,15 +61,40 @@ export const editStudent= async (req,res)=>{
     );
 
     if (!updatedStudent) {
-      return res.status(404).json({ success: false, message: 'Student not found' });
+      return res.status(404).json({ success: false, msg: 'Student not found' });
     }
 
-    res.json({ success: true, data: updatedStudent });
+    return res.json({ success: true, data: updatedStudent ,msg:"Edited Successfully"});
   } 
   catch (error) {
     console.error('Error updating student:', error);
     res.status(500).json({ success: false, message: 'Server error' });
   }
+}
 
-
+export const deleteStudent=async (req,res)=>{
+    try {
+      const { id } = req.params;
+      const deletedRecord = await Student.findByIdAndDelete(id);
+      
+      if (!deletedRecord) {
+          return res.status(404).json({ 
+              success: false,
+              msg: 'Record not found' 
+          });
+      }
+      
+      res.json({ 
+          success: true,
+          msg: 'Record deleted successfully',
+          data: deletedRecord
+      });
+  } catch (error) {
+      console.error('Error deleting record:', error);
+      res.status(500).json({ 
+          success: false,
+          msg: 'Server error while deleting record',
+          error: error.message 
+      });
+  }
 }
