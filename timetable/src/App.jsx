@@ -10,6 +10,7 @@ import Students from './Students/Students';
 import Teachers from './Teachers/Teachers';
 import Courses from './Courses/Courses';
 import Timeslot from './Timeslot/Timeslot';
+import UserHome from './User/Home';
 
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
         <Route path="/Teachers" element={<Teachers/>}/>
         <Route path="/Courses" element={<Courses/>}/>
         <Route path="/Timeslots" element={<Timeslot/>}/>
+        <Route path="/UserHome" element={<UserHome/>}/>
       </Routes>
         
         {/* Add more routes as needed */}
