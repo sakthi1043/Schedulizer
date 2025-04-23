@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import authRoute from "./src/routes/auth.route.js";
 import studRoute from "./src/routes/stud.route.js";
 import batchRoutes from "./src/routes/batch.route.js";
+import productRoutes from "./src/routes/product.route.js";
 //Db connection
 import { connectDB } from "./src/lib/db.js";
 
@@ -49,6 +50,7 @@ app.use(cors({
 app.use("/api/auth",authRoute);
 app.use("/api/Students",studRoute);
 app.use("/api/batches", batchRoutes);
+app.use("/api/Products",productRoutes);
 
 
 app.listen(PORT, () => {

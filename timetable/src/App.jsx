@@ -11,13 +11,14 @@ import Teachers from './Teachers/Teachers';
 import Courses from './Courses/Courses';
 import Timeslot from './Timeslot/Timeslot';
 import UserHome from './User/Home';
+import Product from './Sample/ProductManagement';
 
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route exact path="/" element={<Login/>} />
+        <Route exact path="/" element={<UserHome/>} />
         <Route path="/ForgotPassword" element={<ForgotPassword/>} />
         <Route path="/Register" element={<RegistrationForm/>} />
         <Route path="/Home" element={<Home/>} />
@@ -25,7 +26,8 @@ function App() {
         <Route path="/Teachers" element={<Teachers/>}/>
         <Route path="/Courses" element={<Courses/>}/>
         <Route path="/Timeslots" element={<Timeslot/>}/>
-        <Route path="/UserHome" element={<UserHome/>}/>
+        <Route path="/Login" element={<Login/>}/>
+        <Route path="/Product" element={<Product/>}/>
       </Routes>
         
         {/* Add more routes as needed */}
