@@ -32,7 +32,7 @@ import {
     Close
   } from '@mui/icons-material';
   import { styled } from '@mui/material/styles';
-  import React, { useState, useRef } from 'react';
+  import React, { useState, useRef,useEffect } from 'react';
   import axios from 'axios';
   
   const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -59,20 +59,21 @@ import {
       hover: null
     });
 
-    // useEffect(() => {
-    //     // Get the product list from the backend
-    //     axios.get('http://localhost:8000/api/Products')
-    //         .then(response => {
-    //             if (response.data.success) {
-    //                 setProducts(response.data.products);  // Assuming the API returns a list of products
-    //             } else {
-    //                 console.error('Error fetching products:', response.data.message);
-    //             }
-    //         })
-    //         .catch(error => {
-    //             console.error('Error fetching products:', error);
-    //         });
-    // }, []);
+    useEffect(() => {
+        // Get the product list from the backend
+        axios.get('http://localhost:8000/api/Products')
+            .then(response => {
+                if (response.data.success) {
+                    setProducts(response.data.datas);  // Assuming the API returns a list of products
+                    console.log(response.data.datas);
+                } else {
+                    console.error('Error fetching products:', response.data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching products:', error);
+            });
+    }, []);
   
     // Form state
     const [formData, setFormData] = useState({
@@ -264,7 +265,7 @@ import {
                 <StyledTableRow key={product.id}>
                   <TableCell>
                     <Avatar
-                      src={typeof product.images[0] === 'string' ? product.images[0] : URL.createObjectURL(product.images[0])}
+                      src={encodeURI(product.images[0])} 
                       alt={product.name}
                       sx={{ width: 56, height: 56 }}
                     />

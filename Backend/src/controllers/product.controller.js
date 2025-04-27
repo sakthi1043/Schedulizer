@@ -40,3 +40,19 @@ export const addProduct = async (req, res) => {
     });
   }
 };
+
+export const getProduct= async (req,res) => {
+    try {
+        const Products = await Product.find(); // This fetches all students from the database
+        res.status(200).json({
+          success: true,
+          datas: Products
+        });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({
+          success: false,
+          message: 'Error fetching students'
+        });
+      }
+}
