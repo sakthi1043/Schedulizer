@@ -6,6 +6,7 @@ import authRoute from "./src/routes/auth.route.js";
 import studRoute from "./src/routes/stud.route.js";
 import batchRoutes from "./src/routes/batch.route.js";
 import productRoutes from "./src/routes/product.route.js";
+import depRoutes from "./src/routes/department.route.js";
 //Db connection
 import { connectDB } from "./src/lib/db.js";
 
@@ -18,12 +19,12 @@ app.use(express.json());
 
 app.use(cors({
     origin: ['http://localhost:5173'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE','OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
     allowedHeaders:'Content-Type,Authorization',
 }));
 
-app.options('*', (req, res) => res.sendStatus(200));
+// app.options('*', (req, res) => res.sendStatus(200));
 
 // Dummy user data (Replace with a database in production)
 // const users = [
@@ -53,6 +54,7 @@ app.use("/api/auth",authRoute);
 app.use("/api/Students",studRoute);
 app.use("/api/batches", batchRoutes);
 app.use("/api/Products",productRoutes);
+app.use("/api/Departments",depRoutes);
 
 
 app.listen(PORT, () => {

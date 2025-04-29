@@ -12,6 +12,7 @@ import Courses from './Courses/Courses';
 import Timeslot from './Timeslot/Timeslot';
 import UserHome from './User/Home';
 import Product from './Sample/ProductManagement';
+import Department from './Department/Department';
 
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
         <Route path="/Timeslots" element={<Timeslot/>}/>
         <Route path="/Login" element={<Login/>}/>
         <Route path="/Product" element={<Product/>}/>
+        <Route path="/Department" element={<Department/>}/>
       </Routes>
         
         {/* Add more routes as needed */}

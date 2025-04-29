@@ -6,19 +6,24 @@ import "../Home/AdminDashboard.css";
 import DataTable from "react-data-table-component";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
-import { FaTrash } from "react-icons/fa";
-import { FaPen } from "react-icons/fa";
+import { FaTrash, FaPen } from "react-icons/fa";
 import { Modal } from "bootstrap";
+import Swal from 'sweetalert2';
+import axios  from "axios";
 
-const Courses = () => {
+const Department = () => {
     const [isSidebarOpen, setSidebarOpen] = useState(true);
     const [selectedRow, setSelectedRow] = useState(null);
-    const [departments] = useState([
-        "Computer Science",
-        "Electrical Engineering",
-        "Mechanical Engineering",
-        "Civil Engineering",
-        "Business Administration"
+
+    const [departmentName, setDepartmentName] = useState("");
+    const [departmentCode, setDepartmentCode] = useState("");
+
+    const [departments, setDepartments] = useState([
+        { id: 1, name: "Computer Science", code: "CSE" },
+        { id: 2, name: "Electrical Engineering", code: "EEE" },
+        { id: 3, name: "Mechanical Engineering", code: "ME" },
+        { id: 4, name: "Civil Engineering", code: "CE" },
+        { id: 5, name: "Business Administration", code: "BA" }
     ]);
 
     const handleEdit = (row) => {
@@ -28,14 +33,70 @@ const Courses = () => {
         modal.show();
     };
 
+    const handleDelete = (id) => {
+        alert(`Deleting department with ID ${id}`);
+    };
+
+    const handleAdd = async (e) => {
+            e.preventDefault();
+        
+            if (!departmentName.trim() || !departmentCode.trim()) {
+                // alert();
+                await Swal.fire({
+                    title: 'Error!',
+                    text: ("Please enter both department name and code."),
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+    
+            try {
+                const response = await axios.post("http://localhost:8000/api/Products/add", {
+                    name: departmentName,
+                    code: departmentCode,
+                });
+    
+                if (response.data.success) {
+                    await Swal.fire({
+                        title: 'Success!',
+                        text: (response.data.msg),
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+                    setDepartmentName("");
+                    setDepartmentCode("");
+                    window.location.reload();
+                }
+                else
+                {
+                    await Swal.fire({
+                        title: 'Error!',
+                        text: (response.data.msg),
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            } catch (error) {
+                console.error("Error adding department:", error);
+                await Swal.fire({
+                    title: 'Error!',
+                    text: ("Failed to add department."),
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        };
+
+
+
     const columns = [
         { name: "Id", selector: (row) => row.id, sortable: true },
-        { name: "Course Name", selector: (row) => row.course, sortable: true },
-        { name: "Department", selector: (row) => row.department, sortable: true },
-        { name: "Hours/Week", selector: (row) => row.hoursPerWeek, sortable: true },
+        { name: "Department Name", selector: (row) => row.name, sortable: true },
+        { name: "Department Code", selector: (row) => row.code, sortable: true },
         {
             name: "Actions",
-            selector: (row) => (
+            cell: (row) => (
                 <div>
                     <button
                         onClick={() => handleEdit(row)}
@@ -50,7 +111,6 @@ const Courses = () => {
                             display: "inline-flex",
                             alignItems: "center",
                             justifyContent: "center",
-                            transition: "box-shadow 0.3s ease-in-out",
                         }}
                     >
                         <FaPen color="green" />
@@ -58,7 +118,6 @@ const Courses = () => {
                     <button
                         onClick={() => handleDelete(row.id)}
                         style={{
-                            marginRight: "10px",
                             cursor: "pointer",
                             border: "none",
                             background: "transparent",
@@ -78,11 +137,6 @@ const Courses = () => {
             allowOverflow: true,
             button: true,
         }
-    ];
-
-    const data = [
-        { id: 1, course: "MCA", department: "Computer Science", hoursPerWeek: 4 },
-        { id: 2, course: "BE CS", department: "Computer Science", hoursPerWeek: 5 },
     ];
 
     const customStyles = {
@@ -107,7 +161,6 @@ const Courses = () => {
                 fontSize: "14px",
                 backgroundColor: "#FAFAFA",
                 borderBottom: "1px solid #D9D9D9",
-                transition: "background-color 0.3s",
                 "&:nth-of-type(even)": {
                     backgroundColor: "#F2F2F2",
                 },
@@ -133,111 +186,94 @@ const Courses = () => {
         },
     };
 
-    const handleDelete = (id) => {
-        alert(`Deleting record with ID ${id}`);
-    };
-
     return (
         <Box className="dashboard-container">
             <Header setIsSidebarOpen={setSidebarOpen} />
             <Box className="content-wrapper">
                 <Sidebar isOpen={isSidebarOpen} />
                 <Box className={`dashboard-content ${isSidebarOpen ? "with-sidebar" : "without-sidebar"}`}>
-
                     <div className="container-fluid d-flex flex-column align-items-center vh-100 pt-3">
                         <div className="row w-100 h-100 d-flex justify-content-center">
                             <div className="col-lg-11 col-md-11 col-sm-12 mx-auto" style={{ maxWidth: "95%" }}>
                                 <div className="card shadow-sm mb-3 p-3">
                                     <div className="d-flex justify-content-between align-items-center">
-                                        <h2 className="m-0">Courses</h2>
+                                        <h2 className="m-0">Departments</h2>
                                         <button
                                             className="btn"
                                             style={{ backgroundColor: '#08415C', color: '#fff' }}
                                             data-bs-toggle="modal"
                                             data-bs-target="#myModal"
                                         >
-                                            Add Courses
+                                            Add Department
                                         </button>
                                     </div>
                                 </div>
 
                                 <div className="card shadow-sm p-3">
-                                    <DataTable columns={columns} data={data} pagination customStyles={customStyles} />
+                                    <DataTable columns={columns} data={departments} pagination customStyles={customStyles} />
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Add Course Modal */}
+                    {/* Add Department Modal */}
                     <div className="modal fade" id="myModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div className="modal-dialog modal-lg modal-dialog-centered">
                             <div className="modal-content">
                                 <div className="modal-header">
-                                    <h5 className="modal-title" id="exampleModalLabel">Add Course</h5>
+                                    <h5 className="modal-title" id="exampleModalLabel">Add Department</h5>
                                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
 
                                 <div className="modal-body">
-                                    <form>
+                                    <form method="POST" onSubmit={handleAdd}>
                                         <div className="row">
                                             <div className="col-md-6 mb-3">
-                                                <label htmlFor="coursename" className="form-label">Course Name</label>
+                                                <label htmlFor="departmentName" className="form-label">Department Name</label>
                                                 <input
                                                     type="text"
                                                     className="form-control"
-                                                    name="coursename"
-                                                    placeholder="Course Name"
-                                                    id="coursename"
+                                                    id="departmentName"
+                                                    name="name"
+                                                    placeholder="Enter Department Name"
+                                                    value={departmentName}
+                                                    onChange={(e)=>{setDepartmentName(e.target.value)}}
                                                     required
                                                 />
                                             </div>
 
                                             <div className="col-md-6 mb-3">
-                                                <label htmlFor="department" className="form-label">Department</label>
-                                                <select
-                                                    className="form-select"
-                                                    name="department"
-                                                    id="department"
-                                                    required
-                                                >
-                                                    <option value="">Select Department</option>
-                                                    {departments.map((dept, index) => (
-                                                        <option key={index} value={dept}>{dept}</option>
-                                                    ))}
-                                                </select>
-                                            </div>
-
-                                            <div className="col-md-6 mb-3">
-                                                <label htmlFor="hoursPerWeek" className="form-label">Hours Per Week</label>
+                                                <label htmlFor="departmentCode" className="form-label">Department Code</label>
                                                 <input
-                                                    type="number"
+                                                    type="text"
                                                     className="form-control"
-                                                    name="hoursPerWeek"
-                                                    placeholder="Hours per week"
-                                                    id="hoursPerWeek"
-                                                    min="1"
-                                                    max="40"
+                                                    id="departmentCode"
+                                                    name="code"
+                                                    placeholder="Enter Department Code"
+                                                    value={departmentCode}
+                                                    onChange={(e)=>{setDepartmentCode(e.target.value)}}
                                                     required
                                                 />
                                             </div>
                                         </div>
-                                    </form>
-                                </div>
+                                    
 
                                 <div className="modal-footer d-flex justify-content-end">
                                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" className="btn btn-primary">Submit</button>
+                                    <button type="submit" className="btn btn-primary">Submit</button>
+                                </div>
+                                </form>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Edit Course Modal */}
+                    {/* Edit Department Modal */}
                     <div className="modal fade" id="editModal" tabIndex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
                         <div className="modal-dialog modal-lg modal-dialog-centered">
                             <div className="modal-content">
                                 <div className="modal-header">
-                                    <h5 className="modal-title" id="editModalLabel">Edit Course</h5>
+                                    <h5 className="modal-title" id="editModalLabel">Edit Department</h5>
                                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
 
@@ -245,43 +281,25 @@ const Courses = () => {
                                     <form>
                                         <div className="row">
                                             <div className="col-md-6 mb-3">
-                                                <label htmlFor="editCoursename" className="form-label">Course Name</label>
+                                                <label htmlFor="editDepartmentName" className="form-label">Department Name</label>
                                                 <input
                                                     type="text"
                                                     className="form-control"
-                                                    name="coursename"
-                                                    id="editCoursename"
-                                                    defaultValue={selectedRow?.course || ''}
+                                                    id="editDepartmentName"
+                                                    name="name"
+                                                    defaultValue={selectedRow?.name || ''}
                                                     required
                                                 />
                                             </div>
 
                                             <div className="col-md-6 mb-3">
-                                                <label htmlFor="editDepartment" className="form-label">Department</label>
-                                                <select
-                                                    className="form-select"
-                                                    name="department"
-                                                    id="editDepartment"
-                                                    defaultValue={selectedRow?.department || ''}
-                                                    required
-                                                >
-                                                    <option value="">Select Department</option>
-                                                    {departments.map((dept, index) => (
-                                                        <option key={index} value={dept}>{dept}</option>
-                                                    ))}
-                                                </select>
-                                            </div>
-
-                                            <div className="col-md-6 mb-3">
-                                                <label htmlFor="editHoursPerWeek" className="form-label">Hours Per Week</label>
+                                                <label htmlFor="editDepartmentCode" className="form-label">Department Code</label>
                                                 <input
-                                                    type="number"
+                                                    type="text"
                                                     className="form-control"
-                                                    name="hoursPerWeek"
-                                                    id="editHoursPerWeek"
-                                                    defaultValue={selectedRow?.hoursPerWeek || ''}
-                                                    min="1"
-                                                    max="40"
+                                                    id="editDepartmentCode"
+                                                    name="code"
+                                                    defaultValue={selectedRow?.code || ''}
                                                     required
                                                 />
                                             </div>
@@ -303,4 +321,4 @@ const Courses = () => {
     );
 }
 
-export default Courses;
+export default Department;
