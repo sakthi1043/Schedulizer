@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import Sidebar from "../Home/Sidebar";
 import Header from "../Home/Header";
 import { Box } from "@mui/material";
@@ -18,23 +18,130 @@ const Department = () => {
     const [departmentName, setDepartmentName] = useState("");
     const [departmentCode, setDepartmentCode] = useState("");
 
-    const [departments, setDepartments] = useState([
-        { id: 1, name: "Computer Science", code: "CSE" },
-        { id: 2, name: "Electrical Engineering", code: "EEE" },
-        { id: 3, name: "Mechanical Engineering", code: "ME" },
-        { id: 4, name: "Civil Engineering", code: "CE" },
-        { id: 5, name: "Business Administration", code: "BA" }
-    ]);
+    const [editName, setEditName] = useState("");
+    const [editCode, setEditCode] = useState("");
+
+
+    const [departments, setDepartments] = useState([]);
+
+    
+    useEffect(() => {
+        const fetchDepartments = async () => {
+            try {
+                const response = await axios.get("http://localhost:8000/api/Departments"); // Adjust endpoint if needed
+                if (response.data.success) {
+                    setDepartments(response.data.departments); 
+                } else {
+                    console.error("Failed to fetch departments:", response.data.msg);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: response.data.msg || 'Unable to load departments.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            } catch (error) {
+                console.error("Error fetching departments:", error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Error fetching department data.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        };
+    
+        fetchDepartments();
+    }, []);
 
     const handleEdit = (row) => {
         setSelectedRow(row);
+        setEditName(row.name);
+        setEditCode(row.code);
+        
         const modalElement = document.getElementById("editModal");
         const modal = new Modal(modalElement);
         modal.show();
     };
 
-    const handleDelete = (id) => {
-        alert(`Deleting department with ID ${id}`);
+    const handleUpdate = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await axios.put(`http://localhost:8000/api/Departments/Edit/${selectedRow._id}`, {
+                name: editName,
+                code: editCode,
+            });
+    
+            if (response.data.success) {
+                await Swal.fire({
+                    title: 'Updated!',
+                    text: response.data.msg,
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+                window.location.reload();
+            } else {
+                Swal.fire({
+                    title: 'Error!',
+                    text: response.data.msg,
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        } catch (error) {
+            console.error("Error updating department:", error);
+            Swal.fire({
+                title: 'Error!',
+                text: 'Failed to update department.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        }
+    };
+
+    const handleDelete = async(id) => {
+        const confirm = await Swal.fire({
+            title: 'Are you sure?',
+            text: 'This will permanently delete the department.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!',
+        });
+    
+        if (confirm.isConfirmed) {
+            try {
+                const response = await axios.delete(`http://localhost:8000/api/Departments/Delete/${id}`);
+    
+                if (response.data.success) {
+                    Swal.fire({
+                        title: 'Deleted!',
+                        text: response.data.msg || 'Department deleted successfully.',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+                    setDepartments(departments.filter(dept => dept.id !== id));
+                    window.location.reload();
+                } else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: response.data.msg || 'Failed to delete department.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            } catch (error) {
+                console.error("Error deleting department:", error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Something went wrong while deleting.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        }
+    
     };
 
     const handleAdd = async (e) => {
@@ -52,7 +159,7 @@ const Department = () => {
             }
     
             try {
-                const response = await axios.post("http://localhost:8000/api/Products/add", {
+                const response = await axios.post("http://localhost:8000/api/Departments/add", {
                     name: departmentName,
                     code: departmentCode,
                 });
@@ -91,7 +198,7 @@ const Department = () => {
 
 
     const columns = [
-        { name: "Id", selector: (row) => row.id, sortable: true },
+        { name: "Id", cell: (row, index) => index + 1, sortable: true },
         { name: "Department Name", selector: (row) => row.name, sortable: true },
         { name: "Department Code", selector: (row) => row.code, sortable: true },
         {
@@ -116,7 +223,7 @@ const Department = () => {
                         <FaPen color="green" />
                     </button>
                     <button
-                        onClick={() => handleDelete(row.id)}
+                        onClick={() => handleDelete(row._id)}
                         style={{
                             cursor: "pointer",
                             border: "none",
@@ -278,7 +385,7 @@ const Department = () => {
                                 </div>
 
                                 <div className="modal-body">
-                                    <form>
+                                    <form method="POST" onSubmit={handleUpdate}>
                                         <div className="row">
                                             <div className="col-md-6 mb-3">
                                                 <label htmlFor="editDepartmentName" className="form-label">Department Name</label>
@@ -287,7 +394,8 @@ const Department = () => {
                                                     className="form-control"
                                                     id="editDepartmentName"
                                                     name="name"
-                                                    defaultValue={selectedRow?.name || ''}
+                                                    value={editName}
+                                                    onChange={(e) => setEditName(e.target.value)}
                                                     required
                                                 />
                                             </div>
@@ -299,17 +407,19 @@ const Department = () => {
                                                     className="form-control"
                                                     id="editDepartmentCode"
                                                     name="code"
-                                                    defaultValue={selectedRow?.code || ''}
+                                                    value={editCode}
+                                                    onChange={(e) => setEditCode(e.target.value)}
                                                     required
                                                 />
                                             </div>
                                         </div>
-                                    </form>
-                                </div>
+                                    
 
-                                <div className="modal-footer d-flex justify-content-end">
-                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" className="btn btn-primary">Save Changes</button>
+                                    <div className="modal-footer d-flex justify-content-end">
+                                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" className="btn btn-primary">Save Changes</button>
+                                    </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
