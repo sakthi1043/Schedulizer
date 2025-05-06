@@ -7,6 +7,7 @@ import studRoute from "./src/routes/stud.route.js";
 import batchRoutes from "./src/routes/batch.route.js";
 import productRoutes from "./src/routes/product.route.js";
 import depRoutes from "./src/routes/department.route.js";
+import subjectRoutes from "./src/routes/subject.route.js";
 //Db connection
 import { connectDB } from "./src/lib/db.js";
 
@@ -55,6 +56,7 @@ app.use("/api/Students",studRoute);
 app.use("/api/batches", batchRoutes);
 app.use("/api/Products",productRoutes);
 app.use("/api/Departments",depRoutes);
+app.use("/api/Subjects",subjectRoutes);
 
 
 app.listen(PORT, () => {

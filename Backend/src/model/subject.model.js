@@ -6,7 +6,7 @@ const subjectSchema = new mongoose.Schema({
     name: String,
     department: { type: mongoose.Schema.Types.ObjectId, ref: 'Department' },
     lectureHours: Number,
-    practicalHours: Number
+    // practicalHours: Number
   });
   
   const Subject=mongoose.model('Subject', subjectSchema);

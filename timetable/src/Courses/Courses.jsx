@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import Sidebar from "../Home/Sidebar";
 import Header from "../Home/Header";
 import { Box } from "@mui/material";
@@ -9,17 +9,88 @@ import "bootstrap/dist/js/bootstrap.bundle.min";
 import { FaTrash } from "react-icons/fa";
 import { FaPen } from "react-icons/fa";
 import { Modal } from "bootstrap";
+import axios from "axios";
+import Swal from 'sweetalert2';
 
 const Courses = () => {
     const [isSidebarOpen, setSidebarOpen] = useState(true);
     const [selectedRow, setSelectedRow] = useState(null);
-    const [departments] = useState([
-        "Computer Science",
-        "Electrical Engineering",
-        "Mechanical Engineering",
-        "Civil Engineering",
-        "Business Administration"
-    ]);
+    const [departments,setDepartments] = useState([]);
+    const [courseName, setCourseName] = useState("");
+    const [selectedDepartment, setSelectedDepartment] = useState("");
+    const [hoursPerWeek, setHoursPerWeek] = useState("");
+
+
+    useEffect(() => {
+        const fetchDepartments = async () => {
+            try {
+                const response = await axios.get("http://localhost:8000/api/Departments"); // <-- Update with your actual API URL
+                setDepartments(response.data.departments) // Assuming API returns an array of { name, code }
+            } catch (error) {
+                console.error("Error fetching departments:", error);
+            }
+        };
+
+        fetchDepartments();
+    }, []);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!courseName || !selectedDepartment || !hoursPerWeek) {
+            await Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Please fill in all fields.',
+            });
+            return;
+        }
+    
+        try {
+            const response = await axios.post("http://localhost:8000/api/Subjects/Add", {
+                name: courseName,
+                code: courseName.toLowerCase().replace(/\s+/g, "-"), // Simple code generation
+                departmentId: selectedDepartment,
+                lectureHours: parseInt(hoursPerWeek),
+            });
+            if(response.data.success)
+            {
+                const modalElement = document.getElementById("myModal");
+                const modal = Modal.getInstance(modalElement) || new Modal(modalElement);
+                modal.hide();
+
+                await Swal.fire({
+                    title: 'Success!',
+                    text: (response.data.msg),
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+
+                // Reset fields
+                setCourseName("");
+                setSelectedDepartment("");
+                setHoursPerWeek("");
+
+                window.location.reload();
+            }
+            else
+            {
+                await Swal.fire({
+                    title: 'Error!',
+                    text: (response.data.msg),
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+    
+        } catch (error) {
+            console.error("Error adding course:", error);
+            await Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to add course.',
+            });
+        }
+    };
 
     const handleEdit = (row) => {
         setSelectedRow(row);
@@ -178,7 +249,7 @@ const Courses = () => {
                                 </div>
 
                                 <div className="modal-body">
-                                    <form>
+                                    <form method="POST" onSubmit={handleSubmit}>
                                         <div className="row">
                                             <div className="col-md-6 mb-3">
                                                 <label htmlFor="coursename" className="form-label">Course Name</label>
@@ -188,6 +259,8 @@ const Courses = () => {
                                                     name="coursename"
                                                     placeholder="Course Name"
                                                     id="coursename"
+                                                    value={courseName}
+                                                    onChange={(e) =>{setCourseName(e.target.value)}}
                                                     required
                                                 />
                                             </div>
@@ -198,11 +271,13 @@ const Courses = () => {
                                                     className="form-select"
                                                     name="department"
                                                     id="department"
+                                                    value={selectedDepartment}
+                                                    onChange={(e) =>{setSelectedDepartment(e.target.value)}}
                                                     required
                                                 >
                                                     <option value="">Select Department</option>
-                                                    {departments.map((dept, index) => (
-                                                        <option key={index} value={dept}>{dept}</option>
+                                                    {departments.map((dept) => (
+                                                        <option key={dept._id} value={dept._id}>{dept.name}</option>
                                                     ))}
                                                 </select>
                                             </div>
@@ -217,16 +292,19 @@ const Courses = () => {
                                                     id="hoursPerWeek"
                                                     min="1"
                                                     max="40"
+                                                    value={hoursPerWeek}
+                                                    onChange={(e) =>{setHoursPerWeek(e.target.value)}}
                                                     required
                                                 />
                                             </div>
                                         </div>
-                                    </form>
-                                </div>
+                                    
 
-                                <div className="modal-footer d-flex justify-content-end">
-                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" className="btn btn-primary">Submit</button>
+                                    <div className="modal-footer d-flex justify-content-end">
+                                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" className="btn btn-primary">Submit</button>
+                                    </div>
+                                </form>
                                 </div>
                             </div>
                         </div>
@@ -266,8 +344,8 @@ const Courses = () => {
                                                     required
                                                 >
                                                     <option value="">Select Department</option>
-                                                    {departments.map((dept, index) => (
-                                                        <option key={index} value={dept}>{dept}</option>
+                                                    {departments.map((dept) => (
+                                                        <option key={dept._id} value={dept._id}>{dept.name}</option>
                                                     ))}
                                                 </select>
                                             </div>
