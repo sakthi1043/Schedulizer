@@ -17,22 +17,63 @@ const Courses = () => {
     const [selectedRow, setSelectedRow] = useState(null);
     const [departments,setDepartments] = useState([]);
     const [courseName, setCourseName] = useState("");
+    const [courses,setCourses]=useState([]);
     const [selectedDepartment, setSelectedDepartment] = useState("");
     const [hoursPerWeek, setHoursPerWeek] = useState("");
 
 
+
+    const [editCourseName, setEditCourseName] = useState("");
+    const [editDepartment, setEditDepartment] = useState("");
+    const [editHoursPerWeek, setEditHoursPerWeek] = useState("");
+
+
     useEffect(() => {
-        const fetchDepartments = async () => {
+        const fetchCoursesAndDepartments = async () => {
             try {
-                const response = await axios.get("http://localhost:8000/api/Departments"); // <-- Update with your actual API URL
-                setDepartments(response.data.departments) // Assuming API returns an array of { name, code }
+                const [courseRes, departmentRes] = await Promise.all([
+                    axios.get("http://localhost:8000/api/Subjects"),
+                    axios.get("http://localhost:8000/api/Departments")
+                ]);
+
+                console.log(courseRes.data.subjects);
+                console.log(departmentRes.data.departments);
+                
+    
+                const courseList = Array.isArray(courseRes.data.subjects)
+                    ? courseRes.data.subjects
+                    : [];
+    
+                const departmentList = Array.isArray(departmentRes.data.departments)
+                    ? departmentRes.data.departments
+                    : [];
+    
+                const departmentMap = {};
+                departmentList.forEach(dept => {
+                    departmentMap[dept._id] = dept.name;
+                });
+    
+                const enrichedCourses = courseList.map(course => ({
+                    ...course,
+                    department: departmentMap[course.department] || "Unknown",
+                    departmentId: course.department 
+                }));
+    
+                // console.log("enrich:",enrichedCourses)
+                // console.log("department:",departmentList);
+
+                setCourses(enrichedCourses);
+                // console.log(courses);
+                setDepartments(departmentList);
+                // console.log(departments);
             } catch (error) {
-                console.error("Error fetching departments:", error);
+                console.error("Error fetching courses or departments:", error);
             }
         };
-
-        fetchDepartments();
+    
+        fetchCoursesAndDepartments();
     }, []);
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -65,6 +106,20 @@ const Courses = () => {
                     confirmButtonText: 'OK'
                 });
 
+
+                // Find department name from ID
+                // const departmentName = departments.find(dept => dept._id === selectedDepartment)?.name || "Unknown";
+
+                // console.log(departmentName);
+                // // Add the new course to the local state
+                // const newCourse = {
+                //     ...response.data.savedSubject, // assuming your API returns the new course under 'subject'
+                //     department: departmentName
+                // };
+                // console.log(newCourse);
+
+                // setCourses(prevCourses => [...prevCourses, newCourse]);
+
                 // Reset fields
                 setCourseName("");
                 setSelectedDepartment("");
@@ -94,16 +149,75 @@ const Courses = () => {
 
     const handleEdit = (row) => {
         setSelectedRow(row);
+        setEditCourseName(row.name);
+        setEditDepartment(row.department);
+        setEditHoursPerWeek(row.lectureHours);
+        // alert(editCourseName);
+
         const modalElement = document.getElementById("editModal");
         const modal = new Modal(modalElement);
         modal.show();
     };
 
+    const handleSaveChanges = async (e) => {
+        e.preventDefault();
+        if (!editCourseName || !editDepartment || !editHoursPerWeek) {
+            await Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Please fill in all fields.',
+            });
+            return;
+        }
+    
+        try {
+            const response = await axios.put(`http://localhost:8000/api/Subjects/Edit/${selectedRow._id}`, {
+                name: editCourseName,
+                code: editCourseName.toLowerCase().replace(/\s+/g, "-"),
+                departmentId: editDepartment,
+                lectureHours: parseInt(editHoursPerWeek),
+            });
+    
+            if (response.data.success) {
+                const updatedCourse = response.data.subject;
+    
+                setCourses(prevCourses =>
+                    prevCourses.map(course =>
+                        course._id === selectedRow._id
+                            ? { ...updatedCourse, department: departments.find(d => d._id === editDepartment)?.name || "Unknown" }
+                            : course
+                    )
+                );
+    
+                const modalElement = document.getElementById("editModal");
+                const modal = Modal.getInstance(modalElement);
+                modal.hide();
+    
+                await Swal.fire({
+                    title: 'Updated!',
+                    text: response.data.msg,
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            } else {
+                throw new Error(response.data.msg);
+            }
+        } catch (error) {
+            console.error("Error updating course:", error);
+            await Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to update course.',
+            });
+        }
+    };
+    
+
     const columns = [
-        { name: "Id", selector: (row) => row.id, sortable: true },
-        { name: "Course Name", selector: (row) => row.course, sortable: true },
+        { name: "Id", cell: (row, index) => index + 1, sortable: true },
+        { name: "Course Name", selector: (row) => row.name, sortable: true },
         { name: "Department", selector: (row) => row.department, sortable: true },
-        { name: "Hours/Week", selector: (row) => row.hoursPerWeek, sortable: true },
+        { name: "Hours/Week", selector: (row) => row.lectureHours, sortable: true },
         {
             name: "Actions",
             selector: (row) => (
@@ -127,7 +241,7 @@ const Courses = () => {
                         <FaPen color="green" />
                     </button>
                     <button
-                        onClick={() => handleDelete(row.id)}
+                        onClick={() => handleDelete(row._id)}
                         style={{
                             marginRight: "10px",
                             cursor: "pointer",
@@ -149,11 +263,6 @@ const Courses = () => {
             allowOverflow: true,
             button: true,
         }
-    ];
-
-    const data = [
-        { id: 1, course: "MCA", department: "Computer Science", hoursPerWeek: 4 },
-        { id: 2, course: "BE CS", department: "Computer Science", hoursPerWeek: 5 },
     ];
 
     const customStyles = {
@@ -204,8 +313,49 @@ const Courses = () => {
         },
     };
 
-    const handleDelete = (id) => {
-        alert(`Deleting record with ID ${id}`);
+    const handleDelete = async(id) => {
+        const confirm = await Swal.fire({
+            title: 'Are you sure?',
+            text: 'This will permanently delete the department.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!',
+        });
+    
+        if (confirm.isConfirmed) {
+            try {
+                const response = await axios.delete(`http://localhost:8000/api/Subjects/Delete/${id}`);
+    
+                if (response.data.success) {
+                    Swal.fire({
+                        title: 'Deleted!',
+                        text: response.data.msg || 'Course deleted successfully.',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+                    // setDepartments(courses.filter(cour => cour.id !== id));
+                    setCourses(courses.filter(subject => subject._id !== id));
+                    // window.location.reload();
+                } else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: response.data.msg || 'Failed to delete the course.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            } catch (error) {
+                console.error("Error deleting department:", error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Something went wrong while deleting.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        }
     };
 
     return (
@@ -233,7 +383,7 @@ const Courses = () => {
                                 </div>
 
                                 <div className="card shadow-sm p-3">
-                                    <DataTable columns={columns} data={data} pagination customStyles={customStyles} />
+                                    <DataTable columns={columns} data={courses} pagination customStyles={customStyles} />
                                 </div>
                             </div>
                         </div>
@@ -320,7 +470,7 @@ const Courses = () => {
                                 </div>
 
                                 <div className="modal-body">
-                                    <form>
+                                    <form method="POST" onSubmit={handleSaveChanges}>
                                         <div className="row">
                                             <div className="col-md-6 mb-3">
                                                 <label htmlFor="editCoursename" className="form-label">Course Name</label>
@@ -329,6 +479,8 @@ const Courses = () => {
                                                     className="form-control"
                                                     name="coursename"
                                                     id="editCoursename"
+                                                    value={editCourseName}
+                                                    onChange={(e)=>{setEditCourseName(e.target.value)}}
                                                     defaultValue={selectedRow?.course || ''}
                                                     required
                                                 />
@@ -340,10 +492,11 @@ const Courses = () => {
                                                     className="form-select"
                                                     name="department"
                                                     id="editDepartment"
-                                                    defaultValue={selectedRow?.department || ''}
+                                                    
+                                                    onChange={(e)=>{setEditDepartment(e.target.value)}}
                                                     required
                                                 >
-                                                    <option value="">Select Department</option>
+                                                    <option value="">{editDepartment}</option>
                                                     {departments.map((dept) => (
                                                         <option key={dept._id} value={dept._id}>{dept.name}</option>
                                                     ))}
@@ -357,19 +510,21 @@ const Courses = () => {
                                                     className="form-control"
                                                     name="hoursPerWeek"
                                                     id="editHoursPerWeek"
-                                                    defaultValue={selectedRow?.hoursPerWeek || ''}
+                                                    Value={editHoursPerWeek}
+                                                    onChange={(e)=>{setEditHoursPerWeek(e.target.value)}}
                                                     min="1"
                                                     max="40"
                                                     required
                                                 />
                                             </div>
                                         </div>
-                                    </form>
-                                </div>
+                                    
 
-                                <div className="modal-footer d-flex justify-content-end">
-                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" className="btn btn-primary">Save Changes</button>
+                                    <div className="modal-footer d-flex justify-content-end">
+                                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" className="btn btn-primary">Save Changes</button>
+                                    </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>

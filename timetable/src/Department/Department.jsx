@@ -60,7 +60,7 @@ const Department = () => {
         setEditCode(row.code);
         
         const modalElement = document.getElementById("editModal");
-        const modal = new Modal(modalElement);
+        const modal = Modal.getInstance(modalElement) || new Modal(modalElement);
         modal.show();
     };
 
@@ -73,13 +73,27 @@ const Department = () => {
             });
     
             if (response.data.success) {
+                const modalElement = document.getElementById("editModal");
+                const modal = Modal.getInstance(modalElement) || new Modal(modalElement);
+                modal.hide();
+
+                setDepartments(departments.map(dept =>
+                    dept._id === selectedRow._id
+                        ? { ...dept, name: editName, code: editCode }
+                        : dept
+                ));
+
+                setSelectedRow(null);
+
+                
+                
                 await Swal.fire({
                     title: 'Updated!',
                     text: response.data.msg,
                     icon: 'success',
                     confirmButtonText: 'OK'
                 });
-                window.location.reload();
+                // window.location.reload();
             } else {
                 Swal.fire({
                     title: 'Error!',
@@ -115,14 +129,18 @@ const Department = () => {
                 const response = await axios.delete(`http://localhost:8000/api/Departments/Delete/${id}`);
     
                 if (response.data.success) {
+                    
                     Swal.fire({
                         title: 'Deleted!',
                         text: response.data.msg || 'Department deleted successfully.',
                         icon: 'success',
                         confirmButtonText: 'OK'
                     });
-                    setDepartments(departments.filter(dept => dept.id !== id));
-                    window.location.reload();
+
+                    setDepartments(departments.filter(dept => dept._id !== id));
+                    
+                    
+                    // window.location.reload();
                 } else {
                     Swal.fire({
                         title: 'Error!',
@@ -149,13 +167,14 @@ const Department = () => {
         
             if (!departmentName.trim() || !departmentCode.trim()) {
                 // alert();
+                
                 await Swal.fire({
                     title: 'Error!',
                     text: ("Please enter both department name and code."),
                     icon: 'error',
                     confirmButtonText: 'OK'
                 });
-                return;
+                
             }
     
             try {
@@ -165,15 +184,20 @@ const Department = () => {
                 });
     
                 if (response.data.success) {
+
+                    const modalElement = document.getElementById("myModal");
+                    const modal = Modal.getInstance(modalElement) || new Modal(modalElement);
+                    modal.hide();    
+                    
                     await Swal.fire({
                         title: 'Success!',
                         text: (response.data.msg),
                         icon: 'success',
                         confirmButtonText: 'OK'
                     });
+                    setDepartments([...departments, response.data.department]); // Assuming backend returns the created department
                     setDepartmentName("");
                     setDepartmentCode("");
-                    window.location.reload();
                 }
                 else
                 {

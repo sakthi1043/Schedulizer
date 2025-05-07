@@ -116,14 +116,6 @@ const Students = () => {
 				const modal = Modal.getInstance(modalElement) || new Modal(modalElement);
 				modal.hide();
 
-				await Swal.fire({
-					title: 'Success!',
-					text: (response.data.msg),
-					icon: 'success',
-					confirmButtonText: 'OK'
-				});
-				// console.log(response.data.records,response.data.msg);
-
 				// Reset the form
 				setFormData({
 					name: "",
@@ -133,7 +125,18 @@ const Students = () => {
 					rollNumber:"",
 					batch: ""
 				});
+				setStudents([...students, response.data.Record]); // for add
 
+
+				await Swal.fire({
+					title: 'Success!',
+					text: (response.data.msg),
+					icon: 'success',
+					confirmButtonText: 'OK'
+				});
+				// console.log(response.data.records,response.data.msg);
+
+				
 				window.location.reload();
 				
 
@@ -171,7 +174,7 @@ const Students = () => {
 			  `http://localhost:8000/api/Students/Edit/${selectedStudent._id}`,
 			  formData
 			);
-			const updated = res.data;
+			const updated = res.data.data;
 
 			if(res.data.success)
 			{
@@ -199,7 +202,7 @@ const Students = () => {
 					icon: 'success',
 					confirmButtonText: 'OK'
 				});
-				window.location.reload();
+				// window.location.reload();
 			}
 			else
 			{
@@ -241,6 +244,8 @@ const Students = () => {
 			const response = await axios.delete(`http://localhost:8000/api/Students/Delete/${id}`);
 		
 			if (response.data.success) {
+				setStudents((prev) => prev.filter(student => student._id !== id));
+
 				await Swal.fire({
 					title: 'Success!',
 					text: (response.data.msg),
@@ -248,7 +253,7 @@ const Students = () => {
 					confirmButtonText: 'OK'
 				});
 
-				window.location.reload();
+				// window.location.reload();
 			} 
 			else {
 				await Swal.fire({
